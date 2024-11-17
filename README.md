@@ -1,3 +1,5 @@
+# Bucles
+
 En este video, me gustaría hablar sobre los **bucles** y cómo los usaríamos en **Svelte** si alguna vez quisiéramos recorrer un conjunto de datos, como un arreglo, y mostrar un poco de HTML para cada elemento de ese arreglo.
 
 La mejor manera de aprender esto es con un ejemplo. Ya he limpiado todo el script y el HTML dentro de la etiqueta `<main>` aquí. Ahora, voy a crear una variable llamada `people` y asignarle un arreglo. Dentro de ese arreglo, pegaré estos tres objetos. Estos datos provienen de mi repositorio de **GitHub**.
