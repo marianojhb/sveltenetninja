@@ -1,25 +1,24 @@
 <script>
-  let firstName = 'Mariano'
-  let lastName = 'Hendrix'
-
-  $: fullName = `${firstName} ${lastName}` // Este es una declaracion reactiva (reactive statements)
-  $: console.log(beltColour)
-  $: console.log(fullName)
-
-  let beltColour = 'black'
-  const handleClick = () => {
-    beltColour = 'orange'
-  }
-  const handleInput = (e) => {
-    beltColour = e.target.value
-  }
+  let people = [
+    { name: `Mariano`, beltcolour: `White`, age: 46, id: 1 },
+    { name: `Federico`, beltcolour: `White`, age: 45, id: 2 },
+    { name: `Javier`, beltcolour: `White`, age: 47, id: 3 },
+  ]
 </script>
 
 <main>
-  <p style="color: {beltColour}">{fullName} | {beltColour} belt</p>
-  <input type="text" bind:value={firstName} />
-  <input type="text" bind:value={lastName} />
-  <input type="text" bind:value={beltColour} />
+  <div>
+    <h4>{people[0].name}</h4>
+    <p>{people[0].beltColor}</p>
+  </div>
+  <div>
+    <h4>{people[1].name}</h4>
+    <p>{people[1].beltColor}</p>
+  </div>
+  <div>
+    <h4>{people[2].name}</h4>
+    <p>{people[2].beltColor}</p>
+  </div>
 </main>
 
 <style>
