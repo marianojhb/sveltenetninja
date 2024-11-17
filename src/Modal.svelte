@@ -1,9 +1,11 @@
 <script>
   let showModal = true;
+  let isPromo = true;
 </script>
 
 {#if showModal}
-  <div class="backdrop">
+  <div class="backdrop" class:promo={isPromo}>  <!--  aca le estamos agregando una clase condicional basada en 
+    la variable isPromo -->
     <div class="modal">
       <p>Sign up for offers!</p>
     </div>
@@ -12,6 +14,23 @@
 
 <style>
   .backdrop {
-    background-color: rgba(124, 124, 124, 124);
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    background-color: rgba(0, 0, 0, 0.8);
+  }
+
+  .modal {
+    padding: 10px;
+    border-radius: 10px;
+    max-width: 400px;
+    margin: 10% auto;
+    text-align: center;
+    background: white;
+  }
+
+.promo .modal {
+    background-color: crimson;
+    color: white;
   }
 </style>
