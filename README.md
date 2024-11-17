@@ -1,89 +1,72 @@
-En este video, me gustaría hablar sobre los **bucles** y cómo los usaríamos en **Svelte** si alguna vez quisiéramos recorrer un conjunto de datos, como un arreglo, y mostrar un poco de HTML para cada elemento de ese arreglo.
+En el último video, recorrimos los datos y mostramos un fragmento de HTML para cada persona en el arreglo usando el bucle `each`. Como podemos ver aquí, todo parece estar bien. Ahora imagina que quiero colocar un botón en cada persona, y cuando hacemos clic en ese botón, eliminamos a esa persona del arreglo de datos. Cuando eso sucede, debemos actualizar los datos, lo que debería reflejar ese cambio en el navegador y volver a renderizar la lista.
 
-La mejor manera de aprender esto es con un ejemplo. Ya he limpiado todo el script y el HTML dentro de la etiqueta `<main>` aquí. Ahora, voy a crear una variable llamada `people` y asignarle un arreglo. Dentro de ese arreglo, pegaré estos tres objetos. Estos datos provienen de mi repositorio de **GitHub**.
+Podemos hacer esto. Primero, agreguemos el botón aquí abajo. Es un botón (no `button`), y escribimos "Eliminar" dentro de él. Necesitamos agregar un controlador de clics a este botón porque vamos a reaccionar cuando el usuario haga clic en él. Dentro de este controlador, vamos a hacer referencia a una función, por ejemplo, `handleClick`, pero puedes llamarla como quieras. Luego, necesitamos crear esa función aquí arriba:
 
-Cada uno de estos objetos representa a una sola persona, con las propiedades `name` (nombre), `beltColor` (color del cinturón), `age` (edad) y `id` (identificador). Veremos por qué necesitamos un `id` más adelante, ya que **Svelte** lo requiere cuando usamos bucles.
-
-### Cómo mostrar datos manualmente
-
-Si quisiéramos mostrar un poco de HTML para cada uno de estos elementos, ¿cuáles son las opciones? Podríamos hacerlo manualmente, de la siguiente forma:
-
-```html
-<div>
-  <h4>{people[0].name}</h4>
-  <p>{people[0].beltColor}</p>
-</div>
-<div>
-  <h4>{people[1].name}</h4>
-  <p>{people[1].beltColor}</p>
-</div>
-<div>
-  <h4>{people[2].name}</h4>
-  <p>{people[2].beltColor}</p>
-</div>
+```javascript
+const handleClick = () => {
+  // Lógica para eliminar a la persona
+}
 ```
 
-Esto funcionaría, pero no es la forma más eficiente. Si tuviéramos 20 elementos en el arreglo, tendríamos que hacer esto 20 veces. Y si tuviéramos 100 elementos, lo haríamos 100 veces. Además, no siempre sabemos cuántos datos hay en el arreglo, ya que podrían venir de una base de datos. No sabríamos cuántos elementos debemos mostrar.
+Entonces, ¿cómo eliminamos a la persona del arreglo? El problema aquí es que no sabemos qué persona eliminar porque no estamos pasando esa persona como argumento a la función. No podemos acceder a la persona dentro de esta función. Si intento hacer un `console.log(person)` aquí, no vamos a poder acceder a esa variable.
 
-Por lo tanto, esta no es la forma más eficaz de hacerlo. En su lugar, deberíamos usar un **bucle** para recorrer estos datos y mostrar el HTML correspondiente para cada uno.
+Si refrescamos y tratamos de eliminar algo, veremos que aparece el error: `person is not defined`.
 
-### Usando un bucle `each` en Svelte
-
-La forma correcta de hacerlo en **Svelte** es usando el bucle `each`. Para esto, usamos llaves `{}` y la palabra clave `each`. Esto funciona de manera similar a un bucle `forEach` en JavaScript. Así es como lo haríamos:
+Esto sucede porque, aunque estamos haciendo referencia a la función dentro del bucle, donde sí tenemos acceso a `person`, **no tenemos acceso a esa variable dentro de la función del controlador de clics**. Para solucionarlo, necesitamos encontrar una forma de pasar los datos a la función como un parámetro o argumento. Por ejemplo, podemos pasar el objeto `person` o incluso su `ID`:
 
 ```html
-{#each people as person}
-<div>
-  <h4>{person.name}</h4>
-  <p>{person.age} años, {person.beltColor} cinturón</p>
-</div>
-{/each}
+<button on:click="{handleClick(person.id)}">Eliminar</button>
 ```
 
-Lo que está pasando aquí es que **Svelte** recorrerá el arreglo `people` y, por cada elemento, mostrará un bloque de HTML. En este caso, el bloque de HTML contiene el nombre, la edad y el color del cinturón de cada persona. Cada vez que pase por el arreglo, la variable `person` representará uno de los objetos del arreglo.
+El problema aquí es que estamos invocando la función automáticamente, lo que significa que la función se ejecutará tan pronto como se renderice el componente, no cuando realmente haga clic. Esto sucederá porque estamos usando paréntesis en la invocación de la función, lo que provoca que la función se ejecute inmediatamente. Si tienes código para eliminar a la persona, se ejecutará de inmediato, lo cual no es lo que queremos.
 
-Así que en la primera iteración, `person` será el primer objeto del arreglo, en la segunda iteración será el segundo, y en la tercera será el tercero. Esto simplifica muchísimo la forma en que generamos HTML dinámico.
+Déjame mostrarte esto en acción. Si hago `console.log(person)` dentro de la función, verás que el código se ejecuta automáticamente para cada persona en el arreglo. Queremos evitar esto, por lo que debemos cambiar la forma en que llamamos a la función.
 
-### Vinculando un identificador único
-
-Cuando usamos bucles `each` en **Svelte**, es recomendable asignar una clave única a cada elemento dentro del arreglo. Para ello, podemos pasar la propiedad de clave al bucle.
-
-Vamos a usar la propiedad `id` de cada persona como clave única:
+En lugar de invocar la función directamente, podemos usar una función inline (en línea). Por ejemplo:
 
 ```html
-{#each people as person (person.id)}
-<div>
-  <h4>{person.name}</h4>
-  <p>{person.age} años, {person.beltColor} cinturón</p>
-</div>
-{/each}
+<button on:click="{()" ="">handleClick(person.id)}>Eliminar</button>
 ```
 
-Al usar `(person.id)`, **Svelte** puede hacer un seguimiento de qué elemento del DOM está vinculado con cada ítem del arreglo. Esto es muy útil para la manipulación de datos y evita posibles problemas cuando modificamos los datos o el DOM en el futuro.
+Con esta sintaxis, la función no se invocará automáticamente. Solo se ejecutará cuando el usuario haga clic en el botón. Ahora, si hacemos un `console.log` en el cuerpo de esa función inline, veremos que el log solo se muestra cuando se hace clic en el botón, lo que funciona correctamente.
 
-Aunque en este momento el efecto de esto puede parecer pequeño, es una buena práctica para asegurar que **Svelte** pueda enlazar correctamente los elementos del DOM con los datos, especialmente cuando los datos cambian o se manipulan más tarde.
+Pero no queremos solo hacer un log, queremos eliminar la persona. Así que, dentro de la función `handleClick`, pasamos el `id` de la persona y usaremos ese `id` para filtrar el arreglo de personas y eliminar al que corresponda.
 
-### Usando `else` dentro de un bucle `each`
+Para eliminar a una persona del arreglo, usaremos el método `filter` de JavaScript. El método `filter` recorre el arreglo y ejecuta una función de devolución de llamada (callback) por cada elemento. Si la función devuelve `true`, se mantiene el elemento en el arreglo; si devuelve `false`, se elimina.
 
-Además, si quieres manejar el caso en el que el arreglo esté vacío, puedes usar la palabra clave `else` dentro del bloque `each`. De esta forma, si el arreglo no tiene elementos, se mostrará un mensaje indicando que no hay personas para mostrar:
+El código sería algo como esto:
 
-```html
-{#each people as person (person.id)}
-<div>
-  <h4>{person.name}</h4>
-  <p>{person.age} años, {person.beltColor} cinturón</p>
-</div>
-{:else}
-<p>No hay personas para mostrar.</p>
-{/each}
+```javascript
+const handleClick = (id) => {
+  people = people.filter((person) => person.id !== id)
+}
 ```
 
-Esto es útil si en algún momento el arreglo está vacío. Si guardamos y probamos esto ahora, no verá el mensaje de "No hay personas para mostrar" porque el arreglo no está vacío. Sin embargo, si comentamos los objetos dentro del arreglo y guardamos los cambios, se mostrará el mensaje.
+Este código filtra el arreglo de personas y mantiene solo aquellas personas cuyo `id` no coincide con el `id` que pasamos al hacer clic en el botón. Esto elimina la persona seleccionada.
 
-### Conclusión
+Ahora, necesitamos reasignar el valor de `people` con el nuevo arreglo filtrado, porque **Svelte** observa los cambios y vuelve a renderizar la lista automáticamente cuando se realiza esta reasignación.
 
-Así es como usamos un **bucle `each`** para mostrar un bloque de HTML para cada elemento dentro de un arreglo en **Svelte**. En el siguiente video, me gustaría mostrarte cómo podemos eliminar estos elementos haciendo clic en ellos.
+Si guardamos y probamos esto, al hacer clic en "Eliminar" veremos cómo la persona se elimina del arreglo y se actualiza la lista.
+
+### Event Object
+
+Una cosa más: los controladores de eventos en **Svelte** funcionan de la misma manera que en JavaScript estándar. Si necesitas trabajar con el objeto del evento (por ejemplo, para obtener información sobre el evento), puedes pasarlo a la función. Sin embargo, en este caso no necesitamos el objeto del evento, pero si lo quisiéramos, podríamos pasarle el `event` como argumento de esta manera:
+
+```javascript
+const handleClick = (event, id) => {
+  console.log(event) // Aquí obtendríamos el objeto del evento
+  people = people.filter((person) => person.id !== id)
+}
+```
+
+En este caso, también podemos obtener el objeto del evento, pero no lo necesitamos para este ejemplo específico, así que lo eliminamos.
+
+### Resumen
+
+En resumen, hemos creado una función inline para manejar el clic en el botón sin invocar la función automáticamente. Luego, hemos utilizado el método `filter` de JavaScript para eliminar una persona del arreglo basándonos en su `id`. Finalmente, hemos reasignado el arreglo filtrado a `people` para que **Svelte** actualice la lista en el navegador.
+
+En el próximo video, veremos cómo trabajar con condicionales en las plantillas de **Svelte**.
 
 ---
 
-Este es el texto ordenado y traducido para que sea más claro y fácil de entender. Espero que te sea útil para comprender cómo trabajar con bucles en **Svelte**.
+Esta es la traducción del texto original, explicando cómo manejar clics en un botón para eliminar elementos de un arreglo en **Svelte**. Espero que te sea útil.
