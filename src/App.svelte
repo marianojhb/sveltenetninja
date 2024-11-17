@@ -1,18 +1,37 @@
 <script>
   let people = [
-    { name: `Mariano`, beltcolour: `White`, age: 46, id: 1 },
-    { name: `Federico`, beltcolour: `White`, age: 45, id: 2 },
-    { name: `Javier`, beltcolour: `White`, age: 47, id: 3 },
+    {
+      name: 'Mariano',
+      age: 46,
+      beltcolour: 'red',
+      id: 1,
+    },
+    {
+      name: 'Federico',
+      age: 45,
+      beltcolour: 'blue',
+      id: 2,
+    },
+    {
+      name: 'Javier',
+      age: 45,
+      beltcolour: 'orange',
+      id: 3,
+    },
   ]
 </script>
 
 <main>
   {#each people as person (person.id)}
-    <div>
+    <div style="color: {person.beltcolour}">
       <h4>{person.name}</h4>
       <h4>{person.age} years old</h4>
       <h4>{person.beltcolour} color</h4>
-      <hr>
+      <hr />
+    </div>
+  {:else}
+    <div>
+      <h4>No hay registros.</h4>
     </div>
   {/each}
 </main>
