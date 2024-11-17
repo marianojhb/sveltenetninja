@@ -1,107 +1,65 @@
-# This repo is no longer maintained. Consider using `npm init vite` and selecting the `svelte` option or — if you want a full-fledged app framework — use [SvelteKit](https://kit.svelte.dev), the official application framework for Svelte.
+En el último video, vimos cómo reaccionar a un clic de usuario utilizando el evento `onclick`. Establecimos este evento igual a una referencia a una función, `handleClick`, que se ejecuta cuando ocurre el clic, cambiando el valor de `beltColor` a **naranja**. Esto funciona correctamente cuando hago clic en el botón y el color cambia de negro a naranja. Esto está genial, pero ¿qué pasa si quiero permitir que el usuario escriba en un campo de entrada y elija su propio color? A medida que escribe, el color cambia dinámicamente.
 
----
+### Crear un campo de entrada y manejar el evento `input`
 
-# svelte app
+Para hacer esto, primero creamos un campo de entrada de tipo texto (`<input type="text">`). Luego, necesitamos reaccionar al evento `input`, similar a como reaccionamos al evento `click`. Un evento `input` ocurre cada vez que el usuario escribe algo en el campo de entrada. Así que podemos añadir un **escuchador de eventos** a este campo, usando el evento `oninput`, y asignarlo a una función llamada `handleInput`.
 
-This is a project template for [Svelte](https://svelte.dev) apps. It lives at https://github.com/sveltejs/template.
+**Nota importante:** No invocamos estas funciones inmediatamente, sino que pasamos **referencias a las funciones** para que solo se ejecuten cuando el evento ocurra.
 
-To create a new project based on this template using [degit](https://github.com/Rich-Harris/degit):
+### Crear la función `handleInput`
 
-```bash
-npx degit sveltejs/template svelte-app
-cd svelte-app
+Ahora vamos a definir la función `handleInput`. La crearé como una **función de flecha** (`arrow function`). Dentro de la función, necesitamos tomar el valor que tiene el campo de entrada y asignarlo a `beltColor`. Para obtener el valor del campo, usamos el parámetro `e`, que se pasa automáticamente cuando ocurre un evento. Accedemos al **elemento `target`** del evento (en este caso, el campo de entrada) y a su propiedad `value`, que contiene el texto escrito por el usuario.
+
+El código se vería de la siguiente manera:
+
+```javascript
+const handleInput = (e) => {
+  beltColor = e.target.value
+}
 ```
 
-*Note that you will need to have [Node.js](https://nodejs.org) installed.*
+Cada vez que el usuario escriba algo, esto actualizará el valor de `beltColor` con el nuevo texto, y debería reflejarse en la pantalla en tiempo real.
 
+### Verificar el comportamiento
 
-## Get started
+Si guardamos y probamos esto, veremos que el texto cambia dinámicamente a medida que escribo en el campo de entrada. Si escribo "yellow", el color del cinturón (`beltColor`) se actualiza a amarillo. ¡Esto está genial!
 
-Install the dependencies...
+### ¿Qué pasa con la vinculación de datos bidireccional?
 
-```bash
-cd svelte-app
-npm install
+Sin embargo, en este momento solo tenemos **vinculación unidireccional de datos**. Si el valor de `beltColor` cambia en otro lugar, el campo de entrada no se actualiza. Por ejemplo, si hago clic en el botón y cambio el color a naranja, el campo de entrada no refleja ese cambio.
+
+Para lograr una **vinculación bidireccional de datos**, necesitamos actualizar el valor del campo de entrada cada vez que `beltColor` cambie. Podemos hacer esto estableciendo la propiedad `value` del campo de entrada igual a `beltColor`. De esta manera, siempre que `beltColor` cambie, el campo de entrada se actualizará automáticamente.
+
+El código podría verse así:
+
+```html
+<input type="text" value="{beltColor}" oninput="{handleInput}" />
 ```
 
-...then start [Rollup](https://rollupjs.org):
+### Ahora sí: Vinculación bidireccional
 
-```bash
-npm run dev
+Después de hacer esto, veremos que el valor del campo de entrada coincide con `beltColor`. Ahora, si escribo "yellow", el color del cinturón se actualiza a amarillo y, a su vez, si cambio el color del cinturón a **naranja**, el campo de entrada también refleja este cambio. ¡Esto es vinculación bidireccional en acción!
+
+### Usando `bind` para simplificar la vinculación
+
+Si quieres una forma más sencilla de lograr la vinculación bidireccional de datos, puedes usar la palabra clave `bind` en el campo de entrada. En lugar de establecer manualmente el valor, solo usamos `bind="beltColor"`. Esto hace todo el trabajo por ti: cada vez que el usuario escribe en el campo, se actualiza `beltColor`, y si `beltColor` cambia en otro lugar, el campo de entrada también se actualiza.
+
+El código se vería así:
+
+```html
+<input type="text" bind="beltColor" />
 ```
 
-Navigate to [localhost:8080](http://localhost:8080). You should see your app running. Edit a component file in `src`, save it, and reload the page to see your changes.
+### Vinculación con otros atributos o elementos
 
-By default, the server will only respond to requests from localhost. To allow connections from other computers, edit the `sirv` commands in package.json to include the option `--host 0.0.0.0`.
+Finalmente, también podemos vincular datos a otros atributos o elementos. Por ejemplo, podría establecer el atributo `style` de una etiqueta `<p>` que muestra el valor de `beltColor`. Así, cuando `beltColor` cambie, también actualizará dinámicamente el color del texto. Si el color del cinturón es **negro**, el texto será negro. Si cambia a **rojo**, el texto se pondrá rojo, y así sucesivamente.
 
-If you're using [Visual Studio Code](https://code.visualstudio.com/) we recommend installing the official extension [Svelte for VS Code](https://marketplace.visualstudio.com/items?itemName=svelte.svelte-vscode). If you are using other editors you may need to install a plugin in order to get syntax highlighting and intellisense.
-
-## Building and running in production mode
-
-To create an optimised version of the app:
-
-```bash
-npm run build
+```html
+<p style="color: {beltColor}">El color del cinturón es {beltColor}</p>
 ```
 
-You can run the newly built app with `npm run start`. This uses [sirv](https://github.com/lukeed/sirv), which is included in your package.json's `dependencies` so that the app will work when you deploy to platforms like [Heroku](https://heroku.com).
+### Conclusión
 
+En resumen, puedes vincular datos de manera **unidireccional** o **bidireccional** de una manera muy flexible en JavaScript. Si necesitas vinculación bidireccional, usar `bind` es un atajo conveniente. Además, puedes vincular datos a otros atributos, como `style`, para actualizar dinámicamente la interfaz de usuario.
 
-## Single-page app mode
-
-By default, sirv will only respond to requests that match files in `public`. This is to maximise compatibility with static fileservers, allowing you to deploy your app anywhere.
-
-If you're building a single-page app (SPA) with multiple routes, sirv needs to be able to respond to requests for *any* path. You can make it so by editing the `"start"` command in package.json:
-
-```js
-"start": "sirv public --single"
-```
-
-## Using TypeScript
-
-This template comes with a script to set up a TypeScript development environment, you can run it immediately after cloning the template with:
-
-```bash
-node scripts/setupTypeScript.js
-```
-
-Or remove the script via:
-
-```bash
-rm scripts/setupTypeScript.js
-```
-
-If you want to use `baseUrl` or `path` aliases within your `tsconfig`, you need to set up `@rollup/plugin-alias` to tell Rollup to resolve the aliases. For more info, see [this StackOverflow question](https://stackoverflow.com/questions/63427935/setup-tsconfig-path-in-svelte).
-
-## Deploying to the web
-
-### With [Vercel](https://vercel.com)
-
-Install `vercel` if you haven't already:
-
-```bash
-npm install -g vercel
-```
-
-Then, from within your project folder:
-
-```bash
-cd public
-vercel deploy --name my-project
-```
-
-### With [surge](https://surge.sh/)
-
-Install `surge` if you haven't already:
-
-```bash
-npm install -g surge
-```
-
-Then, from within your project folder:
-
-```bash
-npm run build
-surge public my-project.surge.sh
-```
+¡Con esto, tienes una comprensión completa de cómo manejar eventos, actualizaciones dinámicas y vinculación de datos en JavaScript!
