@@ -1,107 +1,84 @@
-# This repo is no longer maintained. Consider using `npm init vite` and selecting the `svelte` option or — if you want a full-fledged app framework — use [SvelteKit](https://kit.svelte.dev), the official application framework for Svelte.
+### **Valores Reactivos y Declaraciones Reactivas en Svelte**
+
+En este video, quiero hablar sobre valores reactivos y declaraciones reactivas. Para explicar esto de una manera más fácil de entender, voy a usar un ejemplo. Actualmente, solo tenemos dos valores: "name" (nombre) y "belt color" (color del cinturón). Lo que quiero hacer es expandir esto para tener un "first name" (primer nombre) y un "last name" (apellido).
+
+Voy a crear esos dos valores. Primero, el "first name" lo voy a cambiar a "Jimmy" y luego voy a añadir un "last name" que voy a establecer como "Hendrix". Entonces, ahora tengo un "first name" y un "last name". Además, voy a crear un campo de entrada para cada uno, para que un usuario pueda elegir qué valores poner, al igual que tenemos el campo de entrada para el color del cinturón.
+
+Voy a eliminar parte del código que no necesito, como el botón y algunas cosas de arriba. Luego, voy a mantener esta parte, que es donde se muestra el color del cinturón. A continuación, voy a agregar un par de entradas para los nombres. Primero, importamos el "first name" y lo vinculamos con el atributo `bind`, de esta forma:
+
+```html
+<input bind:value="{firstName}" />
+```
+
+Luego, duplicamos esto y cambiamos a "last name":
+
+```html
+<input bind:value="{lastName}" />
+```
+
+Así que ahora tenemos tres entradas: una para el primer nombre, otra para el apellido y otra para el color del cinturón. Estamos mostrando el color del cinturón aquí, pero en vez de eso, voy a eliminar esa línea y guardar el archivo, de manera que ahora solo mostramos el color del cinturón sin el texto que lo describe.
+
+Si voy a la aplicación y cambio el color del cinturón a "rojo", se actualiza automáticamente. Pero si cambio el primer o el segundo nombre, no pasa nada porque no estamos mostrando esos valores aún. Entonces, si quiero mostrar el nombre completo, tendría que concatenar el primer nombre y el apellido. Podría hacer algo como esto:
+
+```js
+firstName + ' ' + lastName
+```
+
+Esto funciona, y si lo guardamos, veremos que dice "Jimmy Hendrix black belt". Si cambiamos el primer nombre a "Jimmy Foo", se actualiza correctamente. Sin embargo, sería mucho más cómodo si tuviéramos un valor llamado "full name" (nombre completo) que se actualice automáticamente cuando cambian el primer o el apellido. Así, no tendríamos que concatenar estos dos valores cada vez.
+
+Para hacer esto, podemos usar lo que se llama un **valor reactivo**. Los valores reactivos en Svelte son valores que se actualizan automáticamente cuando cambian los datos de los que dependen. Es como si fueran propiedades computadas en Vue.js, si estás familiarizado con ellas.
+
+El valor reactivo lo creamos con la sintaxis `$:` de la siguiente manera:
+
+```js
+$: fullName = `${firstName} ${lastName}`
+```
+
+Esto hace que "fullName" se actualice automáticamente cada vez que cambian "firstName" o "lastName". Ahora, en vez de concatenar el nombre completo en la vista, solo tenemos que mostrar el valor de `fullName`:
+
+```html
+<h1>{fullName}</h1>
+```
+
+Ahora, siempre que cambiemos el primer o el apellido, el nombre completo se actualizará automáticamente. Esto es más eficiente porque si tuviéramos que mostrar el nombre completo en varios lugares, no tendríamos que escribir la concatenación en cada uno de ellos.
+
+Este es un ejemplo sencillo, pero la idea es mostrarte cómo funcionan los valores reactivos. En ejemplos más complejos, los valores reactivos serán más útiles. Ahora vamos a guardar y ver cómo funciona:
+
+Puedes cambiar el primer nombre, el apellido y el color del cinturón, y todo se actualiza correctamente.
 
 ---
 
-# svelte app
+### **Valores Reactivos vs. Declaraciones Reactivas**
 
-This is a project template for [Svelte](https://svelte.dev) apps. It lives at https://github.com/sveltejs/template.
+Además de los valores reactivos, existe algo llamado **declaraciones reactivas**, que son similares pero en lugar de contener solo un valor, ejecutan un bloque de código cada vez que los valores dentro de ellos cambian. Para crear una declaración reactiva, usamos la misma sintaxis `$:` pero seguida de un bloque de código.
 
-To create a new project based on this template using [degit](https://github.com/Rich-Harris/degit):
-
-```bash
-npx degit sveltejs/template svelte-app
-cd svelte-app
-```
-
-*Note that you will need to have [Node.js](https://nodejs.org) installed.*
-
-
-## Get started
-
-Install the dependencies...
-
-```bash
-cd svelte-app
-npm install
-```
-
-...then start [Rollup](https://rollupjs.org):
-
-```bash
-npm run dev
-```
-
-Navigate to [localhost:8080](http://localhost:8080). You should see your app running. Edit a component file in `src`, save it, and reload the page to see your changes.
-
-By default, the server will only respond to requests from localhost. To allow connections from other computers, edit the `sirv` commands in package.json to include the option `--host 0.0.0.0`.
-
-If you're using [Visual Studio Code](https://code.visualstudio.com/) we recommend installing the official extension [Svelte for VS Code](https://marketplace.visualstudio.com/items?itemName=svelte.svelte-vscode). If you are using other editors you may need to install a plugin in order to get syntax highlighting and intellisense.
-
-## Building and running in production mode
-
-To create an optimised version of the app:
-
-```bash
-npm run build
-```
-
-You can run the newly built app with `npm run start`. This uses [sirv](https://github.com/lukeed/sirv), which is included in your package.json's `dependencies` so that the app will work when you deploy to platforms like [Heroku](https://heroku.com).
-
-
-## Single-page app mode
-
-By default, sirv will only respond to requests that match files in `public`. This is to maximise compatibility with static fileservers, allowing you to deploy your app anywhere.
-
-If you're building a single-page app (SPA) with multiple routes, sirv needs to be able to respond to requests for *any* path. You can make it so by editing the `"start"` command in package.json:
+Por ejemplo, si quiero imprimir en consola el color del cinturón cada vez que cambie, haría lo siguiente:
 
 ```js
-"start": "sirv public --single"
+$: console.log(beltColor)
 ```
 
-## Using TypeScript
+Esto ejecutará el `console.log` cada vez que el color del cinturón cambie. Si guardamos el archivo y cambiamos el color en la interfaz, veremos cómo se imprime el nuevo color en la consola cada vez.
 
-This template comes with a script to set up a TypeScript development environment, you can run it immediately after cloning the template with:
+Si quiero hacer algo más complejo, como mostrar tanto el color del cinturón como el nombre completo, puedo usar un bloque de código:
 
-```bash
-node scripts/setupTypeScript.js
+```js
+$: {
+  console.log(beltColor)
+  console.log(fullName)
+}
 ```
 
-Or remove the script via:
+Este bloque de código se ejecutará cada vez que cambien los valores que usamos dentro de él (en este caso, `beltColor` y `fullName`). No importa si cambian ambos, solo basta con que uno de ellos cambie para que se ejecute todo el bloque.
 
-```bash
-rm scripts/setupTypeScript.js
-```
+Con esto, cada vez que cambiamos el color del cinturón o el nombre completo, se imprimen ambos en la consola.
 
-If you want to use `baseUrl` or `path` aliases within your `tsconfig`, you need to set up `@rollup/plugin-alias` to tell Rollup to resolve the aliases. For more info, see [this StackOverflow question](https://stackoverflow.com/questions/63427935/setup-tsconfig-path-in-svelte).
+---
 
-## Deploying to the web
+### **Resumen:**
 
-### With [Vercel](https://vercel.com)
+Hoy vimos dos conceptos importantes: los **valores reactivos** y las **declaraciones reactivas**. Estos son muy poderosos en Svelte y te permiten reaccionar a cambios en el estado de la aplicación de manera eficiente. Este fue solo un ejemplo simple, pero con el tiempo los usaremos de manera más compleja para manejar estados más avanzados.
 
-Install `vercel` if you haven't already:
+---
 
-```bash
-npm install -g vercel
-```
-
-Then, from within your project folder:
-
-```bash
-cd public
-vercel deploy --name my-project
-```
-
-### With [surge](https://surge.sh/)
-
-Install `surge` if you haven't already:
-
-```bash
-npm install -g surge
-```
-
-Then, from within your project folder:
-
-```bash
-npm run build
-surge public my-project.surge.sh
-```
+Este formato hace más claro el flujo del tutorial y la explicación de los valores y declaraciones reactivas en Svelte. Si tienes más preguntas o quieres expandir el ejemplo, ¡avísame!
