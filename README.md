@@ -1,72 +1,69 @@
-En el último video, recorrimos los datos y mostramos un fragmento de HTML para cada persona en el arreglo usando el bucle `each`. Como podemos ver aquí, todo parece estar bien. Ahora imagina que quiero colocar un botón en cada persona, y cuando hacemos clic en ese botón, eliminamos a esa persona del arreglo de datos. Cuando eso sucede, debemos actualizar los datos, lo que debería reflejar ese cambio en el navegador y volver a renderizar la lista.
+**Condicionales en Svelte**
 
-Podemos hacer esto. Primero, agreguemos el botón aquí abajo. Es un botón (no `button`), y escribimos "Eliminar" dentro de él. Necesitamos agregar un controlador de clics a este botón porque vamos a reaccionar cuando el usuario haga clic en él. Dentro de este controlador, vamos a hacer referencia a una función, por ejemplo, `handleClick`, pero puedes llamarla como quieras. Luego, necesitamos crear esa función aquí arriba:
+A veces, en nuestro código necesitamos mostrar condicionalmente diferentes HTML dependiendo de una cierta condición. Por ejemplo, si un usuario está logueado en tu sitio web, podrías mostrar una cosa, y una diferente si está desconectado. Entonces, necesitas verificar esa condición, si está logueado o no, y luego mostrar dos cosas diferentes en tu plantilla, dependiendo de eso.
 
-```javascript
-const handleClick = () => {
-  // Lógica para eliminar a la persona
-}
-```
-
-Entonces, ¿cómo eliminamos a la persona del arreglo? El problema aquí es que no sabemos qué persona eliminar porque no estamos pasando esa persona como argumento a la función. No podemos acceder a la persona dentro de esta función. Si intento hacer un `console.log(person)` aquí, no vamos a poder acceder a esa variable.
-
-Si refrescamos y tratamos de eliminar algo, veremos que aparece el error: `person is not defined`.
-
-Esto sucede porque, aunque estamos haciendo referencia a la función dentro del bucle, donde sí tenemos acceso a `person`, **no tenemos acceso a esa variable dentro de la función del controlador de clics**. Para solucionarlo, necesitamos encontrar una forma de pasar los datos a la función como un parámetro o argumento. Por ejemplo, podemos pasar el objeto `person` o incluso su `ID`:
+Para hacer este tipo de verificación en Svelte, podemos usar **sentencias condicionales**, también conocidas como **comprobaciones if**. Vamos a hacer un ejemplo sencillo. Primero, en el script de arriba, voy a crear una pequeña variable llamada `num`, que representa un número, y le voy a asignar el valor de 5. Luego, en la plantilla, podemos hacer una verificación `if` justo encima de `main`, por ejemplo, de la siguiente manera:
 
 ```html
-<button on:click="{handleClick(person.id)}">Eliminar</button>
+{#if num > 20}
+<p>Mayor que 20</p>
+{/if}
 ```
 
-El problema aquí es que estamos invocando la función automáticamente, lo que significa que la función se ejecutará tan pronto como se renderice el componente, no cuando realmente haga clic. Esto sucederá porque estamos usando paréntesis en la invocación de la función, lo que provoca que la función se ejecute inmediatamente. Si tienes código para eliminar a la persona, se ejecutará de inmediato, lo cual no es lo que queremos.
+Aquí, estamos usando el bloque `#if`, que es similar a `#each` que vimos antes, pero esta vez con la condición que queremos evaluar. Si `num` es mayor que 20, el HTML dentro de este bloque se mostrará. Si la condición no es verdadera, no se mostrará nada.
 
-Déjame mostrarte esto en acción. Si hago `console.log(person)` dentro de la función, verás que el código se ejecuta automáticamente para cada persona en el arreglo. Queremos evitar esto, por lo que debemos cambiar la forma en que llamamos a la función.
+En este caso, no veremos nada, porque el valor de `num` es 5, lo cual no es mayor que 20. Si cambio el valor de `num` a 25 y guardo el archivo, veremos el mensaje "Mayor que 20", porque esta evaluación fue verdadera y el HTML dentro del bloque se muestra.
 
-En lugar de invocar la función directamente, podemos usar una función inline (en línea). Por ejemplo:
+Ahora, cambiamos `num` de nuevo a 5, y podemos también agregar una sentencia `else if` para evaluar otra condición. Lo hacemos de la siguiente manera:
 
 ```html
-<button on:click="{()" ="">handleClick(person.id)}>Eliminar</button>
+{#if num > 20}
+<p>Mayor que 20</p>
+{:else if num > 5}
+<p>Mayor que 5</p>
+{/if}
 ```
 
-Con esta sintaxis, la función no se invocará automáticamente. Solo se ejecutará cuando el usuario haga clic en el botón. Ahora, si hacemos un `console.log` en el cuerpo de esa función inline, veremos que el log solo se muestra cuando se hace clic en el botón, lo que funciona correctamente.
+En este caso, si `num` es mayor que 20, se mostrará "Mayor que 20". Si no lo es, pero es mayor que 5, entonces se mostrará "Mayor que 5". Si ninguna de estas condiciones se cumple, no se mostrará nada.
 
-Pero no queremos solo hacer un log, queremos eliminar la persona. Así que, dentro de la función `handleClick`, pasamos el `id` de la persona y usaremos ese `id` para filtrar el arreglo de personas y eliminar al que corresponda.
+Puedo probar esto guardando el archivo y observando que no aparece nada. Pero si cambio `num` a 15, veremos el mensaje "Mayor que 5", porque `num` ahora es mayor que 5, pero no es mayor que 20.
 
-Para eliminar a una persona del arreglo, usaremos el método `filter` de JavaScript. El método `filter` recorre el arreglo y ejecuta una función de devolución de llamada (callback) por cada elemento. Si la función devuelve `true`, se mantiene el elemento en el arreglo; si devuelve `false`, se elimina.
+Si quiero hacer una verificación "catch-all" (que cubra todos los demás casos), podemos usar `else` al final:
 
-El código sería algo como esto:
-
-```javascript
-const handleClick = (id) => {
-  people = people.filter((person) => person.id !== id)
-}
+```html
+{#if num > 20}
+<p>Mayor que 20</p>
+{:else if num > 5}
+<p>Mayor que 5</p>
+{:else}
+<p>No es mayor que 5</p>
+{/if}
 ```
 
-Este código filtra el arreglo de personas y mantiene solo aquellas personas cuyo `id` no coincide con el `id` que pasamos al hacer clic en el botón. Esto elimina la persona seleccionada.
-
-Ahora, necesitamos reasignar el valor de `people` con el nuevo arreglo filtrado, porque **Svelte** observa los cambios y vuelve a renderizar la lista automáticamente cuando se realiza esta reasignación.
-
-Si guardamos y probamos esto, al hacer clic en "Eliminar" veremos cómo la persona se elimina del arreglo y se actualiza la lista.
-
-### Event Object
-
-Una cosa más: los controladores de eventos en **Svelte** funcionan de la misma manera que en JavaScript estándar. Si necesitas trabajar con el objeto del evento (por ejemplo, para obtener información sobre el evento), puedes pasarlo a la función. Sin embargo, en este caso no necesitamos el objeto del evento, pero si lo quisiéramos, podríamos pasarle el `event` como argumento de esta manera:
-
-```javascript
-const handleClick = (event, id) => {
-  console.log(event) // Aquí obtendríamos el objeto del evento
-  people = people.filter((person) => person.id !== id)
-}
-```
-
-En este caso, también podemos obtener el objeto del evento, pero no lo necesitamos para este ejemplo específico, así que lo eliminamos.
-
-### Resumen
-
-En resumen, hemos creado una función inline para manejar el clic en el botón sin invocar la función automáticamente. Luego, hemos utilizado el método `filter` de JavaScript para eliminar una persona del arreglo basándonos en su `id`. Finalmente, hemos reasignado el arreglo filtrado a `people` para que **Svelte** actualice la lista en el navegador.
-
-En el próximo video, veremos cómo trabajar con condicionales en las plantillas de **Svelte**.
+Aquí, si `num` no es mayor que 20 ni mayor que 5, se ejecutará el bloque `else` y mostrará "No es mayor que 5". Si pongo `num = 3` y guardo, veremos el mensaje "No es mayor que 5".
 
 ---
 
-Esta es la traducción del texto original, explicando cómo manejar clics en un botón para eliminar elementos de un arreglo en **Svelte**. Espero que te sea útil.
+**Aplicando Condicionales en un Loop**
+
+Ahora, voy a aplicar este tipo de lógica condicional a nuestra pequeña plantilla para cada persona, que tenemos más abajo. Lo que quiero hacer es verificar si el color del cinturón de la persona es **negro**. Si lo es, voy a mostrar una línea extra en el HTML.
+
+Voy a hacerlo dentro del loop `each`, donde estamos recorriendo las personas. Si el color del cinturón de una persona es negro, voy a mostrar un mensaje que diga **"Master Ninja"**.
+
+Así que lo que hago es lo siguiente:
+
+```html
+{#each people as person} {#if person.beltColor === 'black'}
+<p><strong>Master Ninja</strong></p>
+{/if} {/each}
+```
+
+En este código, estamos utilizando el bloque `#if` dentro de un loop `each`. Si el `beltColor` de la persona es igual a "black", se mostrará un mensaje con el texto **"Master Ninja"**. Si no, no se mostrará nada.
+
+Así que si vemos la lista de personas, podemos observar que solo se mostrará el mensaje **"Master Ninja"** para aquellos que tengan el cinturón negro. Por ejemplo, si **Yoshi** tiene un cinturón negro, veremos el mensaje, pero si otra persona tiene un cinturón de un color diferente, no se mostrará nada.
+
+---
+
+**Resumen:**
+
+Así es como funcionan las sentencias condicionales en Svelte. Podemos usar estas verificaciones `if`, `else if` y `else` para mostrar diferentes partes del HTML dependiendo de ciertas condiciones. Esto es útil para mostrar contenido dinámico según el estado de la aplicación, como si un usuario está logueado o si una persona tiene un cinturón de un color específico. ¡Es una forma poderosa de controlar el flujo de nuestra aplicación!
