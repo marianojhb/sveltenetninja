@@ -1,3 +1,5 @@
+# Inline event handlers
+
 En el último video, recorrimos los datos y mostramos un fragmento de HTML para cada persona en el arreglo usando el bucle `each`. Como podemos ver aquí, todo parece estar bien. Ahora imagina que quiero colocar un botón en cada persona, y cuando hacemos clic en ese botón, eliminamos a esa persona del arreglo de datos. Cuando eso sucede, debemos actualizar los datos, lo que debería reflejar ese cambio en el navegador y volver a renderizar la lista.
 
 Podemos hacer esto. Primero, agreguemos el botón aquí abajo. Es un botón (no `button`), y escribimos "Eliminar" dentro de él. Necesitamos agregar un controlador de clics a este botón porque vamos a reaccionar cuando el usuario haga clic en él. Dentro de este controlador, vamos a hacer referencia a una función, por ejemplo, `handleClick`, pero puedes llamarla como quieras. Luego, necesitamos crear esa función aquí arriba:
