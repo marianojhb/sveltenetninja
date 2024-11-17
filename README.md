@@ -1,3 +1,5 @@
+# User input and data binding
+
 En el último video, vimos cómo reaccionar a un clic de usuario utilizando el evento `onclick`. Establecimos este evento igual a una referencia a una función, `handleClick`, que se ejecuta cuando ocurre el clic, cambiando el valor de `beltColor` a **naranja**. Esto funciona correctamente cuando hago clic en el botón y el color cambia de negro a naranja. Esto está genial, pero ¿qué pasa si quiero permitir que el usuario escriba en un campo de entrada y elija su propio color? A medida que escribe, el color cambia dinámicamente.
 
 ### Crear un campo de entrada y manejar el evento `input`
