@@ -1,5 +1,7 @@
 https://www.youtube.com/watch?v=TanFofZBvNI&list=PL4cUxeGkcC9hlbrVO_2QFVqVPhlZmz7tO&index=3
 
+# Svelte Basics
+
 Alright then, gang, so before we write any code whatsoever, let's have a
 little look at how everything works in Svelte underneath the hood.
 
