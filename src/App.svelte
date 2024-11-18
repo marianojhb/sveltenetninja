@@ -37,6 +37,7 @@ const addPerson = (e) => {
   console.log(e.detail)
   const person = e.detail
   people = [person, ...people]
+  showModal = false
 }
 
 </script>
