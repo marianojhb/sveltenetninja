@@ -8,19 +8,19 @@
     {
       name: 'Mariano',
       age: 46,
-      beltcolour: 'red',
+      beltColour: 'red',
       id: 1,
     },
     {
       name: 'Federico',
       age: 45,
-      beltcolour: 'blue',
+      beltColour: 'blue',
       id: 2,
     },
     {
       name: 'Javier',
       age: 45,
-      beltcolour: 'orange',
+      beltColour: 'orange',
       id: 3,
     },
   ]
@@ -32,18 +32,25 @@
   const toggleModal = () => {
     showModal = !showModal
   }
+
+const addPerson = (e) => {
+  console.log(e.detail)
+  const person = e.detail
+  people = [person, ...people]
+}
+
 </script>
 
 <Modal isPromo={false} {showModal} on:click={toggleModal}>
-  <AddPersonForm />
+  <AddPersonForm on:addPerson={addPerson} />
 </Modal>
 
 <main>
   <button on:click={toggleModal}>Open Modal...</button>
   {#each people as person (person.id)}
-    <div style="color: {person.beltcolour}">
+    <div style="color: {person.beltColour}">
       <h4>{person.name}</h4>
-      <h4>{person.age} years old, {person.beltcolour} belt</h4>
+      <h4>{person.age} years old, {person.beltColour} belt</h4>
       <button on:click={() => handleClick(person.id)}>delete</button>
       <hr />
     </div>
