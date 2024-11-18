@@ -1,6 +1,5 @@
 <script>
   import Modal from './Modal.svelte'
-  import addPersonForm from './AddPersonForm.svelte'
   import AddPersonForm from './AddPersonForm.svelte'
 
   let showModal = false
@@ -38,6 +37,7 @@
 <Modal isPromo={false} {showModal} on:click={toggleModal}>
   <AddPersonForm />
 </Modal>
+
 <main>
   <button on:click={toggleModal}>Open Modal...</button>
   {#each people as person (person.id)}

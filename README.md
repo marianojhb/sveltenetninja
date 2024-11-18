@@ -1,53 +1,27 @@
-# Forms - parte 1
+# Forms parte 2
 
-Bueno, entonces, en la última lección vimos cómo podíamos pasar todo este contenido aquí, transformarlo en un slot para el modal y luego renderizarlo dentro del componente usando las etiquetas de slot. Ahora sabemos cómo usar esos slots, y me gustaría hablar un poco más sobre los formularios. Pero antes de seguir, lo que quiero hacer es extraer todo el contenido del formulario a su propio componente y luego usar ese componente aquí, porque por ahora el código en este archivo **App.svelte** se está volviendo bastante largo y pronto va a quedar muy desordenado. Así que vamos a borrar todo esto de aquí. De hecho, vamos a eliminar el **h3** y cortar todo este contenido, porque lo vamos a pegar en otro archivo en un momento. Luego, dentro de la carpeta **src**, voy a crear un nuevo archivo y lo voy a llamar **addPersonForm.svelte**.
+¡Muy bien, amigos! Ahora que hemos visto un par de tipos diferentes de inputs, me gustaría mostrarles dos más, comenzando con los **checkboxes**. ¿Cómo podemos vincularnos a ellos? Primero, vamos a crear estos checkboxes. Crearé una **etiqueta** primero, no necesitamos el atributo **for** por ahora, y esto simplemente va a decir **skills** (habilidades). Ahora vamos a tener una serie de checkboxes, y al lado de cada uno va a estar una habilidad. Marcamos ese checkbox si la persona tiene esa habilidad. Entonces, vamos a crear un **input** de tipo **checkbox**, y al lado vamos a poner **Fighting** (pelea), que sería una habilidad. Luego, agregamos un salto de línea `<br>` para separar las opciones. Vamos a marcar este checkbox si la persona tiene la habilidad de pelear. Voy a duplicar esto un par de veces, voy a cambiar el primero a **Sneaking** (sigilo) y el segundo a **Running** (correr), como sigue.
 
-Primero necesitamos una etiqueta `<script>` en la parte superior y también necesitamos algo de HTML. Así que voy a agregar primero este formulario y luego volveremos a mejorarlo un poco más adelante. Al final, agregaré una etiqueta `<style>` por si necesitamos algún estilo en el futuro.
+Voy a guardar esto y previsualizar lo que se ve. Abro el modal, y ahora podemos ver estas habilidades. Si marcamos este checkbox es para **Fighting**, este es para **Sneaking** y este es para **Running**. Ahora, ¿cómo vinculamos si el usuario ha marcado estos checkboxes o no? ¿Cómo sabemos eso? Una forma es usar el atributo **checked**. Recuerden que si tenemos un atributo **checked** aplicado a uno de estos inputs, esto va a ser **true** o **false**. Si decimos que esto es **true**, entonces se marcará el checkbox, y si es **false**, no se marcará. Por defecto, es **false**, pero podemos decir explícitamente **false** aquí también, y eso significará que no está marcado. 
 
-Así que tenemos este formulario aquí y los dos inputs, uno para el nombre y otro para el color del cinturón. También quiero enlazar estos dos inputs a las propiedades que tenemos arriba en el script. Entonces voy a decir `let name` (no necesitamos inicializarlo con un valor porque cuando el usuario escriba algo en el campo, se va a actualizar automáticamente), y luego también `let beltColor`.
+Lo que podemos hacer es vincularnos a esta propiedad. Así como nos vinculamos al valor de los inputs antes, también podemos vincularnos a la propiedad **checked** de un checkbox. Podemos decir **bind:checked={fighting}**. Esto significa que estamos vinculando la propiedad **checked** de este checkbox a una variable llamada **fighting**. Así que, si **fighting** es **false**, entonces este checkbox estará sin marcar, y si **fighting** es **true**, el checkbox estará marcado. Lo mismo ocurre si el usuario marca este checkbox, la propiedad **fighting** se actualizará a **true**. ¿Tiene sentido? 
 
-Ahora tenemos estas dos propiedades, y queremos enlazar los valores de estos inputs a esas propiedades para que cuando escribamos en los inputs, también se actualicen estos valores. Ya hemos visto esto antes cuando hablamos de **data binding**. Así que ahora voy a enlazar el valor de este input al variable `name`, y lo mismo abajo, pero esta vez lo voy a enlazar a `beltColor`. Así que para el color del cinturón sería: `bind:value={beltColor}`.
+Podemos hacer lo mismo para cada uno de estos checkboxes. Voy a copiar y pegar esto, y voy a vincular el segundo a una variable llamada **sneaking**, y el tercero a una variable llamada **running**. Necesitamos crear esas variables, así que las declaro como **let sneaking = false** y **let running = false**. Ahora estamos almacenando si el usuario ha marcado cada uno de estos checkboxes en estas tres variables. Si imprimimos esas variables, deberíamos ver una variación de **true/false** dependiendo de si el usuario marca o no esos checkboxes. Así que voy a mostrar esas tres variables en la salida, **fighting**, **sneaking** y **running**, y deberíamos ver algo como **true false true**, dependiendo de lo que el usuario haya marcado.
 
-Ahora tenemos estos dos inputs. Todo esto ya lo hemos visto antes, y están vinculados a esas dos propiedades. Ahora quiero agregar un tercer input para la edad. Así que voy a poner otro input, pero esta vez vamos a usar el tipo **number** en lugar de **text**, lo que nos da un campo numérico, que es un input estándar de HTML. Si abrimos el modal, todavía no lo vemos porque no hemos renderizado este componente todavía. Así que vamos a **app.svelte**, vamos al principio y vamos a importar este nuevo componente de formulario que creamos, así que escribimos:
+Guardo eso, y ahora, si abro el modal y escribo algo de texto, por ejemplo, si marco **Fighting** y **Sneaking**, deberíamos ver en la consola **true true false**. Eso significa que hemos vinculado correctamente los valores de los checkboxes. Entonces, esto es una forma de rastrear si el usuario ha marcado un checkbox, simplemente vinculándonos a la propiedad **checked**.
 
-```javascript
-import AddPersonForm from './addPersonForm.svelte'
-```
+Ahora bien, esto está bien, pero es un poco desordenado, especialmente si tenemos muchos checkboxes, porque terminamos con muchas propiedades. Entonces, hay otra forma de hacerlo, y es utilizando el atributo **grouped**. Vamos a comentar todo esto y te mostraré cómo hacerlo de manera diferente.
 
-Y ahora podemos usar este componente dentro del contenido del modal. Así que lo colocamos ahí, dentro del modal.
+Voy a copiar y pegar todo esto aquí abajo y lo descomento. Ahora, en lugar de vincularnos a la propiedad **checked**, vamos a vincularnos a un atributo **group**. Voy a escribir **bind:group={skills}**. Y voy a declarar una variable llamada **skills** que será un **array vacío** al principio. Ahora, lo que estamos haciendo aquí es decir que todos estos checkboxes pertenecen a un grupo específico, y estamos vinculando ese grupo a la variable **skills**, que es un array. Cuando el usuario marque un checkbox, el valor de ese checkbox se agregará a ese array. Por ejemplo, si marcamos **Fighting** y **Sneaking**, los valores **Fighting** y **Sneaking** se agregarán al array **skills**. Ahora estamos manteniendo todos los valores seleccionados por el usuario en un solo array, lo cual es mucho más limpio que tener una variable por cada checkbox.
 
-Lo que estamos haciendo aquí es simplemente importar este nuevo componente y luego insertarlo en el modal. Así que todo ese contenido va a ir al modal y se va a renderizar allí, espero que tenga sentido.
+Así que, si guardamos esto y cambiamos la salida para mostrar el array **skills**, cuando abramos el modal, si marcamos **Fighting** y **Sneaking**, el array **skills** debería contener **["Fighting", "Sneaking"]**. Si luego agregamos **Running** y quitamos **Sneaking**, el array debería ser **["Fighting", "Running"]**. Esto es mucho más fácil de manejar, especialmente si tenemos muchos checkboxes, porque ahora estamos guardando todas las selecciones en un solo array.
 
-Guardamos eso, refrescamos y lo probamos. Ahora, si abrimos el modal, veremos el input numérico y los otros dos inputs. Esos dos primeros campos tienen las flechitas para aumentar o disminuir el valor.
+Eso es lo que quería mostrarles con los checkboxes. Ahora, déjenme eliminar todo este código de aquí porque ya no lo necesitamos.
 
-Ahora, el comportamiento por defecto de JavaScript cuando leemos valores de cualquier tipo de input, ya sea número o texto o cualquier otro, es que convierte ese valor en una cadena (string) en JavaScript. Pero en **Svelte**, cuando enlazamos un input de tipo número, lo convierte en el tipo correcto, como un número o un entero. Así que voy a decir `bind:value={age}`, y vamos a crear esa propiedad aquí arriba como `let age`. Si escribimos 5 en el campo, Svelte lo convertirá automáticamente en un entero.
+El siguiente tipo de input que quiero mostrarles es el **select box**. Actualmente, un usuario puede ingresar su propio color de cinturón aquí en un campo de texto, pero en lugar de eso, quiero usar un **select box** para el color del cinturón. Así que, debajo de los checkboxes, vamos a agregar otra **etiqueta** que va a decir **Belt Color** (color del cinturón). Luego, debajo de eso, agregamos un **select box**. Este select box no necesita un **name** ni un **id**, así que podemos quitar esos atributos. Dentro de este select box, vamos a tener varias opciones. La primera opción será **Black** (negro), y el texto que verá el usuario será también **Black**. Voy a duplicar esta opción varias veces, cambiando el valor de cada opción a diferentes colores: **Orange** (naranja), **Brown** (marrón) y **White** (blanco).
 
-Esto es útil porque cuando estamos guardando datos, es preferible tener los números como enteros en lugar de cadenas, pero si quisiéramos tratarlo como una cadena, podríamos convertirlo a string en cualquier momento.
+Ahora lo que quiero hacer es vincular el valor del select box a la variable **beltColor**. Entonces, decimos **bind:value={beltColor}**. Lo que está pasando aquí es que, cuando el usuario selecciona una opción en el desplegable, el valor del select box se establece en el valor de esa opción. Por ejemplo, si el usuario selecciona **Orange**, el valor de **beltColor** se actualizará a **Orange**. Así de fácil. 
 
-También vamos a agregar un **placeholder** para el campo de la edad. Así que lo pondremos como `placeholder="Edad"`. Ahora tenemos los tres campos: nombre, color del cinturón y edad, y están vinculados a esas tres variables.
+Voy a guardar eso y probarlo. Si abro el modal y pongo un nombre como **Mario**, una edad como **30**, selecciono **Sneaking** y **Running**, y el color del cinturón como **Brown**, cuando hago clic en "Agregar persona", el resultado será **Mario, Brown, 30, Sneaking, Running**. Si cambio el color del cinturón a **Black**, el array de datos aún lo rastrea correctamente.
 
-Ahora necesitamos reaccionar cuando el usuario envíe este formulario. Podemos hacerlo de dos maneras: podemos adjuntar un evento **click** al botón, o podemos adjuntar un evento **submit** al formulario. Yo voy a usar el método **submit** porque no lo hemos visto aún. Entonces, voy a decir `on:submit={handleSubmit}`. Así que, igual que tenemos un evento **click** en un botón, también podemos tener un evento **submit** en el formulario. Este evento se dispara cuando hacemos clic en el botón dentro del formulario, porque hacer clic en un botón dentro de un formulario **envía** el formulario.
-
-Cuando esto sucede, queremos invocar alguna función. Así que voy a decir `handleSubmit` y voy a declarar esa función arriba, así que la definimos como:
-
-```javascript
-const handleSubmit = () => {
-  console.log(name, beltColor, age)
-}
-```
-
-Esto simplemente va a imprimir en la consola los valores actuales de **name**, **beltColor** y **age** cuando se envíe el formulario.
-
-Vamos a probar esto. Notarás algo un poco extraño. Si abro el modal, escribo algunos datos, y luego hago clic en "Agregar persona", vamos a ver que en la consola se registran los valores, pero después de un par de segundos la página se recarga. Esto pasa porque el comportamiento por defecto de un formulario cuando se envía es que recarga la página.
-
-Recuerden que habíamos hablado de un **event modifier** para prevenir eso, y ese modificador es **preventDefault**. Así que vamos a usarlo ahora. Vamos a escribir:
-
-```html
-on:submit|preventDefault={handleSubmit}
-```
-
-Esto previene el comportamiento por defecto de recargar la página al enviar el formulario.
-
-Guardamos eso y probamos otra vez. Ahora, cuando escribimos los valores y hacemos clic en "Agregar persona", ya no se recarga la página y podemos ver los valores correctamente en la consola.
-
-Eso cubre lo básico de los formularios. Ya hemos visto algunas cosas antes, como los inputs, el **data binding**, y cómo prevenir la acción por defecto del formulario, pero en el próximo video quiero hablar de otros tipos de inputs: como los **checkbox** y los **select boxes**. Así que veremos eso en el siguiente video.
+Así que eso es todo, hemos cubierto cómo usar los **checkboxes** y los **select boxes** en Svelte. En el próximo video, vamos a ver cómo actualizar los datos de las personas en nuestra aplicación. ¡Nos vemos!
