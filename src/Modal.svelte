@@ -1,12 +1,12 @@
 <script>
-  export let message = "default value";
-  let showModal = true;
-  export let isPromo = false;
+  export let message = 'default value'
+  export let showModal = true
+  export let isPromo = false
 </script>
 
 {#if showModal}
-  <div class="backdrop" class:promo={isPromo}>  <!--  aca le estamos agregando una clase condicional basada en 
-    la variable isPromo -->
+  <div class="backdrop" class:promo={isPromo} on:click>
+    <!-- le agregamos onclick para pasarle el control a App.svelte nuevamente -->
     <div class="modal">
       <p>{message}</p>
       <p>Sign up for offers!</p>
@@ -31,7 +31,7 @@
     background: white;
   }
 
-.promo .modal {
+  .promo .modal {
     background-color: crimson;
     color: white;
   }

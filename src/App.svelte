@@ -1,6 +1,8 @@
 <script>
   import Modal from './Modal.svelte'
 
+  let showModal = false
+
   let people = [
     {
       name: 'Mariano',
@@ -25,10 +27,20 @@
     people = people.filter((person) => person.id != id)
     console.log(e)
   }
+
+  const toggleModal = () => {
+    showModal = !showModal
+  }
 </script>
 
-<Modal message="Hey I am a prop" isPromo={false} />
+<Modal
+  message="Hey I am a prop"
+  isPromo={false}
+  {showModal}
+  on:click={toggleModal}
+/>
 <main>
+  <button on:click={toggleModal}>Open Modal...</button>
   {#each people as person (person.id)}
     <div style="color: {person.beltcolour}">
       <h4>{person.name}</h4>
