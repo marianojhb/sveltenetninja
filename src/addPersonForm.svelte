@@ -1,7 +1,7 @@
 <script>
   let name
   let beltColour
-  let age = 5
+  let age
   let skills = []
 
   const handleSubmit = () => {
@@ -18,7 +18,7 @@
     <option value="black">Black</option>
     <option value="orange">Orange</option>
     <option value="brown">Brown</option>
-    <option value="white">White</option>
+    <option value="white" selected="selected">White</option>
   </select>
 
   <label>Skills:</label>
