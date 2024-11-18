@@ -5,7 +5,7 @@
 </script>
 
 {#if showModal}
-  <div class="backdrop" class:promo={isPromo} on:click>
+  <div class="backdrop" class:promo={isPromo} on:click|self>
     <!-- le agregamos onclick para pasarle el control a App.svelte nuevamente -->
     <div class="modal">
       <p>{message}</p>
