@@ -1,94 +1,31 @@
-# Dispatching custom events
+# Comenzando el proyecto Votación (Poll Project)
 
-Bueno, entonces, ahora tenemos nuestro formulario acá y cuando enviamos este formulario estamos simplemente imprimiendo estos distintos valores en la consola, pero al final lo que queremos hacer es tomar esos datos y agregar una nueva persona a este array con esos datos, un nuevo objeto basado en esos datos. Ahora, para hacer eso, tenemos que tomar los datos de este formulario, todo lo que tenemos acá, y pasarlos al componente padre, para que puedan ser agregados a este array, porque podemos editar directamente esos datos (este array) solo desde este componente, no dentro del componente del formulario en sí.
+Prefiero que no sea un "gang", así que creo que ya sabemos lo suficiente sobre lo básico de Svelte.
 
-Entonces, creo que necesitamos manejar el evento de envío de este formulario dentro del componente padre, no necesariamente en el componente del formulario. Ahora, podrías pensar que podríamos usar el **event forwarding** en este evento de envío, como vimos antes dentro del **Modal**, donde usamos el **event forwarding** en los eventos de click y los manejamos en el componente padre, así.
+Ahora vamos a juntar todo en un mini proyecto. Vamos a construir ese proyecto de "poles" que vimos al principio de esta serie. Para hacer esto, vamos a crear un proyecto de Svelte desde cero. Estoy en este directorio llamado "Tut", que es donde quiero crear el proyecto.
 
-El problema con eso es que no nos permitiría enviar los datos que tenemos desde el formulario hacia el árbol de componentes, porque cuando usamos el **event forwarding** no pasamos ningún dato, simplemente reenviamos el evento tal cual. Entonces no podríamos agregar personas al array de esta manera.
+Así que, recordá que para crear un nuevo proyecto de Svelte, tenés que decir `npx degit`, y primero tenés que tener instalado el paquete `degit`. Después escribís `sveltejs/template` y yo le voy a poner de nombre a este proyecto "ninja-poles".
 
-Por eso, no usamos **event forwarding**. En su lugar, vamos a **despachar** (dispatch) lo que se conoce como un **evento personalizado** desde nuestro formulario y luego enviar esos datos al componente padre. Así que empecemos con esto y vamos a modificar el **Add Person Form**.
+Le das a Enter y eso va a crear el proyecto por nosotros. Cuando termine, entramos a ese directorio con `cd` y después le digo `code .` para que abra VS Code en este directorio.
 
-Lo primero que tenemos que hacer es importar `createEventDispatcher` de la librería de Svelte. Entonces, escribimos:
+Ahora, en VS Code, podemos ver el boilerplate (esqueleto) del proyecto. Lo primero que voy a hacer es abrir la terminal y asegurarme de que puedo correrlo con `npm install`, para instalar todas las dependencias que el proyecto necesita según el archivo `package.json`.
 
-```js
-import { createEventDispatcher } from 'svelte'
-```
+Una vez que termine de instalar, voy a correr `npm run dev`, que va a levantar un servidor local de desarrollo para que podamos ver el proyecto en el navegador. Lo vemos acá, y lo voy a agrandar un poco para que se vea mejor.
 
-Ahora necesitamos crear una función `dispatch`, que es lo que vamos a usar para despachar el evento personalizado. Esto va a quedar más claro enseguida, así que escribimos:
+Este es el proyecto básico que viene por defecto cuando creamos un nuevo proyecto de Svelte. Voy a asegurarme de que todo esté funcionando bien: voy al componente raíz de la app, borro este párrafo, elimino todos los estilos de abajo, porque más adelante vamos a crear nuestros propios estilos. También vamos a borrar este nombre de acá, y lo vamos a reemplazar por "Ninjas". Lo guardamos y verificamos que todo esté andando en el servidor en vivo. Vamos al navegador y debería actualizarse, ¡y funciona perfectamente!
 
-```js
-let dispatch = createEventDispatcher()
-```
+Así que ya tenemos el proyecto armado y listo para empezar a programar en el próximo video. Pero antes de empezar, siempre me parece buena idea planificar la estructura de los componentes y decidir cómo va a fluir la data en la web antes de empezar a escribir código. Esto te va a ahorrar un montón de problemas después.
 
-Este `dispatch` es ahora una función que usamos para despachar eventos personalizados desde este componente, pasando con él datos personalizados.
+Entonces, primero, tenemos el componente raíz, y lo primero que vamos a hacer es crear dos componentes: uno para el encabezado (header) y otro para el pie de página (footer), para ponerlos arriba y abajo del sitio web. Vamos a poner esos dos componentes directamente dentro de `App.svelte`.
 
-Ahora queremos usar esta función `dispatch` dentro del `handleSubmit` o cuando enviamos el formulario. Queremos despachar un evento personalizado desde este componente. Pero antes de hacer eso, vamos a juntar todos los datos en un solo objeto `person` que usaremos para agregar a la persona al array.
+Luego, vamos a crear otros dos componentes: uno para el formulario de creación de encuesta (create poll form), que va a permitir que el usuario ingrese información para crear una nueva encuesta, y otro para la lista de encuestas (poll list), que va a mostrar todas las encuestas que tengamos.
 
-Entonces, creamos el objeto `person` de la siguiente forma:
+Ambos componentes se van a poner también dentro de `App.svelte`. Finalmente, vamos a tener un componente llamado `PollDetails`, que va a estar dentro de `PollList`, y va a ser la plantilla de una sola encuesta. El trabajo de este componente va a ser recorrer todas las encuestas y mostrar una plantilla para cada una cuando pasemos los datos de la encuesta.
 
-```js
-const person = {
-  name,
-  beltColour,
-  age,
-  skills: [fighting, sneaking, running],
-  id: Math.random(), // Genera un ID aleatorio
-}
-```
+También vamos a tener algunos componentes de interfaz de usuario (UI) que podremos inyectar en otros componentes cuando los necesitemos, como un botón, una tarjeta y un sistema de pestañas para la navegación en la parte superior.
 
-Ahora tenemos todos los datos que necesitamos. Para hacer el código un poco más limpio, podemos abreviar esto de la siguiente forma (esto implica el valor de la variable con el nombre de la propiedad):
+Al principio, vamos a almacenar toda la data en el componente `App.svelte`, y esa data va a ser la lista de encuestas. Luego, vamos a poder usar esos datos o agregar nuevos datos desde los otros componentes, pasándolos hacia abajo en el árbol de componentes, o en el caso del formulario, emitiendo un evento y pasando los nuevos datos hacia el componente raíz.
 
-```js
-const person = {
-  name,
-  beltColour,
-  age,
-  skills: [fighting, sneaking, running],
-  id: Math.random(),
-}
-```
+Pero más adelante, cuando aprendamos sobre "data stores" (almacenamiento de datos), vamos a guardar toda la data en un store central, y podremos acceder o actualizar esa data desde cualquier componente que necesitemos.
 
-Ahora, necesitamos despachar un evento personalizado llamado `addPerson` y pasar este objeto `person` como datos. Entonces, dentro del `handleSubmit`, hacemos lo siguiente:
-
-```js
-dispatch('addPerson', person)
-```
-
-Esto va a enviar el objeto `person` como parte del evento personalizado.
-
-Ahora podemos manejar este evento personalizado en el componente padre, porque el formulario es el que está despachando el evento. Para escuchar este evento en el componente padre, usamos la misma sintaxis que para cualquier otro evento, decimos `on` seguido del nombre del evento y, en nuestro caso, es `addPerson` porque es como lo llamamos antes. Así que, en el componente padre, lo escuchamos de esta forma:
-
-```js
-on: addPerson = { handleAddPerson }
-```
-
-Donde `handleAddPerson` es una función que vamos a crear en el componente padre para manejar este evento.
-
-Ahora creamos esa función, así que escribimos:
-
-```js
-const handleAddPerson = (e) => {
-  const person = e.detail // Los datos que enviamos están en 'detail'
-  console.log(person) // Mostramos el objeto de la persona en la consola
-}
-```
-
-Lo que sucede aquí es que los datos que enviamos en el evento personalizado están automáticamente adjuntos al objeto `event` dentro de la propiedad `detail`. Así que podemos acceder a esos datos y hacer lo que queramos con ellos.
-
-Ahora, si abrimos el modal y completamos el formulario con algunos datos, como nombre "Sean", edad "30", habilidades, y un color de cinturón, y luego hacemos click en "Agregar Persona", deberíamos ver ese objeto `person` registrado en la consola, todo funcionando correctamente.
-
-Finalmente, lo que quiero hacer es tomar esos datos y agregarlos a este array de personas en el componente padre. No puedo simplemente hacer `people.push(person)` porque esto no va a disparar una actualización en Svelte. Recuerda que Svelte solo reconoce que estamos actualizando los datos cuando reasignamos el valor a la variable, no cuando modificamos los datos directamente.
-
-Entonces, lo que voy a hacer es lo siguiente:
-
-```js
-people = [...people, person]
-```
-
-Usamos el operador de propagación (`...`) para copiar el contenido actual de `people` y luego agregar el nuevo `person` al principio del array. Esto va a disparar la actualización en Svelte, y el nuevo array con la persona añadida se va a reflejar en la vista.
-
-Entonces, cuando agregamos una nueva persona, el array `people` se actualiza y, gracias al ciclo de reactividad de Svelte, los cambios se reflejan automáticamente en la interfaz de usuario.
-
----
-
-Así que, ahora tenemos una forma funcional de agregar nuevas personas al array, manejar eventos personalizados y actualizar la vista correctamente. Además, si quieres, puedes agregar otra `each` para mostrar las habilidades de cada persona, o lo que necesites.
+Esa es la estructura del proyecto a grandes rasgos, y eso es lo que vamos a ir construyendo en el resto de esta serie.
