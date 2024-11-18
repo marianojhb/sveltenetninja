@@ -1,45 +1,36 @@
-# CSS & Conditional Styles
+# Props
 
-Bien, entonces, cuando se trata de estilizar nuestro proyecto, hay un par de formas diferentes en las que podemos agregar CSS. La primera forma es agregar el CSS a una **hoja de estilos global**. Esta hoja de estilos se aplicará a todos los componentes diferentes, sin importar cuántos usemos. Esta hoja de estilos global se crea automáticamente cuando creamos un nuevo proyecto en Svelte, como hicimos, y se encuentra en la carpeta **public**. Ahí veremos un archivo llamado `global.css`. Cuando creamos un nuevo proyecto, este archivo se rellena automáticamente con algunos estilos básicos.
+Sirven para pasar data entre componentes.
 
-Puedes mantener estos estilos o eliminarlos. Yo los voy a dejar, pero lo importante aquí es que estos estilos son **globales** y se aplican a todos los componentes. Por ejemplo, si agregamos un estilo para los párrafos y les cambiamos el color de texto a rojo, este estilo se aplicará a todos los párrafos, sin importar en qué componente estén.
+Bien, ahora tenemos nuestro componente **modal**. Déjame borrar esos `main` tags y ahora se ve algo así en el navegador. Se ve bastante bien. Sin embargo, este mensaje aquí, "sign up for offers", está **codificado de forma estática** dentro del propio componente modal. Esto no hace que el componente modal sea muy reutilizable, porque si quisiéramos usar el modal en otro lugar, por ejemplo, en otro componente más abajo o incluso en un componente diferente a medida que ampliamos nuestro sitio web en el futuro, siempre tendría el mismo mensaje codificado dentro de cada modal.
 
-### Estilos globales:
+Sería mucho mejor si este mensaje pudiera ser **dinámico**, y que para cada modal que usemos, podamos pasar un mensaje diferente. Es decir, queremos poder **pasar datos a los componentes** y podemos hacerlo usando lo que se conoce como **props** en Svelte. ¿Cómo hacemos esto? ¿Cómo pasamos datos o props a un componente?
 
-Primero, vamos a crear algunos estilos globales, y luego veremos cómo añadir **estilos locales**. Para ello, voy a agregar algunos estilos adicionales aquí. Y por cierto, este archivo `global.css` se carga desde el archivo `index.html` en el proyecto. Este archivo es el que servimos al navegador y es el que vincula a la hoja de estilos global.
+Bueno, simplemente declaramos qué props queremos pasar en el componente donde lo usamos. Por ejemplo, podría usar una prop llamada `message`, pero puedes llamarlo como quieras, no tienes que llamarlo `message`. Luego, le asignamos algún valor. Ese valor puede ser cualquier cosa: un número, una cadena de texto, o un objeto. Yo voy a usar una cadena de texto, así que pongo comillas dobles y digo "hey, soy un valor de prop". Ahora estamos diciendo, "ok, cuando crees este componente modal, quiero que pases una prop llamada `message`, y este será el valor de ese mensaje".
 
-Podrías crear más hojas de estilos dentro de la carpeta **public**, si lo deseas, pero por ahora no es necesario, así que lo dejaremos como está.
+Ahora quiero acceder a esa prop dentro del modal. ¿Cómo lo hacemos? Primero, necesitamos declarar que vamos a usar esa variable, que en este caso se llama `message`. Así que voy a decir `let message;`. Ahora necesitamos decir que esto puede ser configurado desde fuera del componente, lo cual está pasando porque lo estamos configurando en `App.svelte` aquí. Lo estamos estableciendo fuera del componente y pasándolo.
 
-Voy a empezar a estilizar el `body`. Podría agregar estos estilos en el selector `body` directamente, pero prefiero mantenerlos todos juntos en un solo lugar para poder hacer un mejor seguimiento. Así que voy a decir que el color va a ser **#777**, un gris medio, y el fondo del `body` será **#eee**. También voy a eliminar el padding y el margen, por si acaso hay algún valor predeterminado, para empezar desde cero.
+Para hacer esto, necesitamos poner la palabra clave `export` antes de declarar la variable, y ahora estamos diciendo "ok, esta variable `message` va a venir de fuera, o puede ser configurada desde fuera de este componente". Ahora, lo que puedo hacer es decir simplemente `message` aquí, y va a mostrar el valor que se haya asignado a esa prop desde fuera del componente.
 
-A continuación, voy a estilizar los `h4`. Recuerda que los `h4` en este momento son los nombres de los componentes que hemos creado, así que voy a ponerles el color **orange-red**. Y por último, vamos a estilizar los **botones**. Los botones tendrán un fondo blanco.
+Recuerda que el nombre de la variable y el de la prop **tienen que coincidir**. Deben ser exactamente iguales. Y de nuevo, esta palabra clave `export` simplemente significa que estamos pasando esta prop desde fuera del componente.
 
-### Estilos locales:
+Esto debería funcionar, así que si lo guardamos, veremos que el mensaje aquí será **"hey, soy un valor de prop"**. ¡Genial! Ahora podemos pasarle un valor por defecto a la prop. Por ejemplo, podría decir `default value`, pero podrías ser más original. Si no pasamos el `message` como prop, por ejemplo, si corto esta línea y guardo, va a usar este valor por defecto, que veremos en la interfaz. Sin embargo, en el momento en que pasamos una prop con el mismo nombre `message`, esta sobrescribe el valor por defecto y usa el valor de la prop.
 
-Ahora, pasemos a la segunda forma de agregar estilos, que es la de **estilos específicos de componente**. Recuerda que cada componente en Svelte puede tener su propia etiqueta `<style>` para estilos locales. Automáticamente, cuando creamos un componente en Svelte, este tendrá su propio conjunto de estilos, como los que vimos en el componente `App.svelte`.
+### Pasar más props:
 
-Estos estilos se aplicarán solo a los elementos dentro de este componente. Por ejemplo, si agregamos un `main` en el componente `App.svelte`, los estilos de `App.svelte` solo se aplicarán a ese `main`. Si luego vamos al componente `Modal.svelte` y añades un `main` ahí, los estilos de `App.svelte` no afectarán a este nuevo `main` porque los estilos son específicos para cada componente.
+Ahora vamos a pasar también la prop `isPromo`. De nuevo, necesitamos poner `export` porque estamos configurando esta prop desde fuera del componente. Le asignamos un valor por defecto de **false**, pero si luego vamos aquí y decimos, "ok, `isPromo = true`", dentro de las llaves, porque es un valor dinámico (es un booleano, por eso no está entre comillas como las cadenas de texto), entonces `isPromo` va a sobrescribir este valor por defecto y será **true**.
 
-Svelte hace esto creando **clases únicas** para los elementos dentro de cada componente, y cuando compila todo el código, genera un archivo único de CSS donde las clases de cada componente se identifican de manera única. Esto se puede ver en la carpeta **public/build**, en el archivo `bundle.css`, donde notarás que las clases tienen caracteres aleatorios añadidos a su nombre, lo que asegura que no haya conflictos entre los estilos de diferentes componentes.
+Si guardamos, veremos que el modal se vuelve de color rojo, porque ahora `isPromo` es verdadero. Si no pasamos esa prop y corto esta línea, el valor por defecto de **false** se usará, y no veremos el fondo rojo, lo cual es correcto.
 
-### Estilos del modal:
+### Recapitulando:
 
-Ahora que sabemos cómo funcionan los estilos globales y locales, vamos a estilizar nuestro **componente modal**. Primero, vamos a estilizar el **backdrop**. Seleccionamos el fondo del modal y le damos las siguientes propiedades:
+Así que ahora tenemos la prop `isPromo` que controla si el modal tiene un fondo rojo. Si no pasamos esa prop, usamos el valor por defecto, **false**, y el modal tiene su estilo normal.
 
-- **width: 100%** y **height: 100%** para cubrir toda la pantalla.
-- **position: fixed** para que se quede en la pantalla aunque se haga scroll.
-- Usamos un fondo **rgba(0, 0, 0, 0.8)**, donde el `0.8` es la opacidad para darle un fondo semi-transparente negro.
+Recuerda que para pasar datos a un componente en Svelte hay dos pasos:
 
-Cuando guardamos y revisamos en el navegador, veremos que el fondo ahora tiene un tono oscuro y semi-transparente, lo que ayuda a que el modal se distinga del resto de la página.
+1. Primero, declaramos las props aceptadas dentro del componente, usando la palabra clave `export`, como lo hicimos con `message` y `isPromo`.
+2. Luego, pasamos esas props al componente donde lo usamos, asegurándonos de que el nombre de la prop coincida con el de la variable en el componente.
 
-A continuación, estilizamos el **modal** en sí. Le damos un **padding** de 10px, un **border-radius** de 10px para hacer las esquinas más suaves, y una **anchura máxima de 400px** para que no se haga demasiado grande. Además, le agregamos un margen superior e inferior del **10%** y automático en los márgenes izquierdo y derecho para centrarlo en la pantalla. También alineamos el texto en el centro, y le damos un fondo blanco al modal.
+Este método de no codificar el mensaje hace que el modal sea mucho más reutilizable, porque más adelante podemos usar el modal en otro lugar de la aplicación, no necesariamente en el mismo sitio, y el valor de la prop `message` podría ser diferente.
 
-### Clases condicionales:
-
-Ahora, quiero mostrarte cómo aplicar clases condicionalmente. Supongamos que tenemos un modal especial de tipo **promocional** que queremos estilizar de manera diferente. Podríamos agregar una clase condicionalmente al **backdrop** basándonos en una condición.
-
-Para hacer esto, podemos crear una variable `isPromo` que determine si el modal es promocional. Si es **true**, aplicamos una clase llamada `promo`. Esta clase se agregará al `backdrop` solo si la condición `isPromo` es **true**. Si cambiamos el valor de `isPromo` a **false**, la clase `promo` desaparecerá.
-
-Por ejemplo, si `isPromo` es **true**, podemos agregar la clase `promo` al backdrop, y luego estilizar ese fondo para que tenga un color **crimson** y el texto sea **blanco**. Si `isPromo` es **false**, el modal tendrá el estilo normal.
-
-Esto nos permite aplicar estilos específicos a diferentes tipos de modales de forma dinámica.
+Ahora, el modal es muy reutilizable. Lo único que realmente falta ahora es poder alternar el valor de `showModal` entre **true** y **false** para poder mostrar y ocultar el modal, y veremos cómo hacer esto usando **event forwarding** en el siguiente video.

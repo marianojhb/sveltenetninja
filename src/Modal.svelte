@@ -1,12 +1,14 @@
 <script>
+  export let message = "default value";
   let showModal = true;
-  let isPromo = true;
+  export let isPromo = false;
 </script>
 
 {#if showModal}
   <div class="backdrop" class:promo={isPromo}>  <!--  aca le estamos agregando una clase condicional basada en 
     la variable isPromo -->
     <div class="modal">
+      <p>{message}</p>
       <p>Sign up for offers!</p>
     </div>
   </div>

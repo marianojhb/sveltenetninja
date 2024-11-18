@@ -27,19 +27,19 @@
   }
 </script>
 
-<Modal />
+<Modal message="Hey I am a prop" isPromo={false} />
 <main>
   {#each people as person (person.id)}
-  <div style="color: {person.beltcolour}">
-    <h4>{person.name}</h4>
-    <h4>{person.age} years old, {person.beltcolour} belt</h4>
-    <button on:click={() => handleClick(person.id)}>delete</button>
-    <hr />
-  </div>
+    <div style="color: {person.beltcolour}">
+      <h4>{person.name}</h4>
+      <h4>{person.age} years old, {person.beltcolour} belt</h4>
+      <button on:click={() => handleClick(person.id)}>delete</button>
+      <hr />
+    </div>
   {:else}
-  <div>
-    <h4>No hay registros.</h4>
-  </div>
+    <div>
+      <h4>No hay registros.</h4>
+    </div>
   {/each}
 </main>
 
