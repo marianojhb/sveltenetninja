@@ -1,27 +1,94 @@
-# Forms parte 2
+# Dispatching custom events
 
-¡Muy bien, amigos! Ahora que hemos visto un par de tipos diferentes de inputs, me gustaría mostrarles dos más, comenzando con los **checkboxes**. ¿Cómo podemos vincularnos a ellos? Primero, vamos a crear estos checkboxes. Crearé una **etiqueta** primero, no necesitamos el atributo **for** por ahora, y esto simplemente va a decir **skills** (habilidades). Ahora vamos a tener una serie de checkboxes, y al lado de cada uno va a estar una habilidad. Marcamos ese checkbox si la persona tiene esa habilidad. Entonces, vamos a crear un **input** de tipo **checkbox**, y al lado vamos a poner **Fighting** (pelea), que sería una habilidad. Luego, agregamos un salto de línea `<br>` para separar las opciones. Vamos a marcar este checkbox si la persona tiene la habilidad de pelear. Voy a duplicar esto un par de veces, voy a cambiar el primero a **Sneaking** (sigilo) y el segundo a **Running** (correr), como sigue.
+Bueno, entonces, ahora tenemos nuestro formulario acá y cuando enviamos este formulario estamos simplemente imprimiendo estos distintos valores en la consola, pero al final lo que queremos hacer es tomar esos datos y agregar una nueva persona a este array con esos datos, un nuevo objeto basado en esos datos. Ahora, para hacer eso, tenemos que tomar los datos de este formulario, todo lo que tenemos acá, y pasarlos al componente padre, para que puedan ser agregados a este array, porque podemos editar directamente esos datos (este array) solo desde este componente, no dentro del componente del formulario en sí.
 
-Voy a guardar esto y previsualizar lo que se ve. Abro el modal, y ahora podemos ver estas habilidades. Si marcamos este checkbox es para **Fighting**, este es para **Sneaking** y este es para **Running**. Ahora, ¿cómo vinculamos si el usuario ha marcado estos checkboxes o no? ¿Cómo sabemos eso? Una forma es usar el atributo **checked**. Recuerden que si tenemos un atributo **checked** aplicado a uno de estos inputs, esto va a ser **true** o **false**. Si decimos que esto es **true**, entonces se marcará el checkbox, y si es **false**, no se marcará. Por defecto, es **false**, pero podemos decir explícitamente **false** aquí también, y eso significará que no está marcado. 
+Entonces, creo que necesitamos manejar el evento de envío de este formulario dentro del componente padre, no necesariamente en el componente del formulario. Ahora, podrías pensar que podríamos usar el **event forwarding** en este evento de envío, como vimos antes dentro del **Modal**, donde usamos el **event forwarding** en los eventos de click y los manejamos en el componente padre, así.
 
-Lo que podemos hacer es vincularnos a esta propiedad. Así como nos vinculamos al valor de los inputs antes, también podemos vincularnos a la propiedad **checked** de un checkbox. Podemos decir **bind:checked={fighting}**. Esto significa que estamos vinculando la propiedad **checked** de este checkbox a una variable llamada **fighting**. Así que, si **fighting** es **false**, entonces este checkbox estará sin marcar, y si **fighting** es **true**, el checkbox estará marcado. Lo mismo ocurre si el usuario marca este checkbox, la propiedad **fighting** se actualizará a **true**. ¿Tiene sentido? 
+El problema con eso es que no nos permitiría enviar los datos que tenemos desde el formulario hacia el árbol de componentes, porque cuando usamos el **event forwarding** no pasamos ningún dato, simplemente reenviamos el evento tal cual. Entonces no podríamos agregar personas al array de esta manera.
 
-Podemos hacer lo mismo para cada uno de estos checkboxes. Voy a copiar y pegar esto, y voy a vincular el segundo a una variable llamada **sneaking**, y el tercero a una variable llamada **running**. Necesitamos crear esas variables, así que las declaro como **let sneaking = false** y **let running = false**. Ahora estamos almacenando si el usuario ha marcado cada uno de estos checkboxes en estas tres variables. Si imprimimos esas variables, deberíamos ver una variación de **true/false** dependiendo de si el usuario marca o no esos checkboxes. Así que voy a mostrar esas tres variables en la salida, **fighting**, **sneaking** y **running**, y deberíamos ver algo como **true false true**, dependiendo de lo que el usuario haya marcado.
+Por eso, no usamos **event forwarding**. En su lugar, vamos a **despachar** (dispatch) lo que se conoce como un **evento personalizado** desde nuestro formulario y luego enviar esos datos al componente padre. Así que empecemos con esto y vamos a modificar el **Add Person Form**.
 
-Guardo eso, y ahora, si abro el modal y escribo algo de texto, por ejemplo, si marco **Fighting** y **Sneaking**, deberíamos ver en la consola **true true false**. Eso significa que hemos vinculado correctamente los valores de los checkboxes. Entonces, esto es una forma de rastrear si el usuario ha marcado un checkbox, simplemente vinculándonos a la propiedad **checked**.
+Lo primero que tenemos que hacer es importar `createEventDispatcher` de la librería de Svelte. Entonces, escribimos:
 
-Ahora bien, esto está bien, pero es un poco desordenado, especialmente si tenemos muchos checkboxes, porque terminamos con muchas propiedades. Entonces, hay otra forma de hacerlo, y es utilizando el atributo **grouped**. Vamos a comentar todo esto y te mostraré cómo hacerlo de manera diferente.
+```js
+import { createEventDispatcher } from 'svelte'
+```
 
-Voy a copiar y pegar todo esto aquí abajo y lo descomento. Ahora, en lugar de vincularnos a la propiedad **checked**, vamos a vincularnos a un atributo **group**. Voy a escribir **bind:group={skills}**. Y voy a declarar una variable llamada **skills** que será un **array vacío** al principio. Ahora, lo que estamos haciendo aquí es decir que todos estos checkboxes pertenecen a un grupo específico, y estamos vinculando ese grupo a la variable **skills**, que es un array. Cuando el usuario marque un checkbox, el valor de ese checkbox se agregará a ese array. Por ejemplo, si marcamos **Fighting** y **Sneaking**, los valores **Fighting** y **Sneaking** se agregarán al array **skills**. Ahora estamos manteniendo todos los valores seleccionados por el usuario en un solo array, lo cual es mucho más limpio que tener una variable por cada checkbox.
+Ahora necesitamos crear una función `dispatch`, que es lo que vamos a usar para despachar el evento personalizado. Esto va a quedar más claro enseguida, así que escribimos:
 
-Así que, si guardamos esto y cambiamos la salida para mostrar el array **skills**, cuando abramos el modal, si marcamos **Fighting** y **Sneaking**, el array **skills** debería contener **["Fighting", "Sneaking"]**. Si luego agregamos **Running** y quitamos **Sneaking**, el array debería ser **["Fighting", "Running"]**. Esto es mucho más fácil de manejar, especialmente si tenemos muchos checkboxes, porque ahora estamos guardando todas las selecciones en un solo array.
+```js
+let dispatch = createEventDispatcher()
+```
 
-Eso es lo que quería mostrarles con los checkboxes. Ahora, déjenme eliminar todo este código de aquí porque ya no lo necesitamos.
+Este `dispatch` es ahora una función que usamos para despachar eventos personalizados desde este componente, pasando con él datos personalizados.
 
-El siguiente tipo de input que quiero mostrarles es el **select box**. Actualmente, un usuario puede ingresar su propio color de cinturón aquí en un campo de texto, pero en lugar de eso, quiero usar un **select box** para el color del cinturón. Así que, debajo de los checkboxes, vamos a agregar otra **etiqueta** que va a decir **Belt Color** (color del cinturón). Luego, debajo de eso, agregamos un **select box**. Este select box no necesita un **name** ni un **id**, así que podemos quitar esos atributos. Dentro de este select box, vamos a tener varias opciones. La primera opción será **Black** (negro), y el texto que verá el usuario será también **Black**. Voy a duplicar esta opción varias veces, cambiando el valor de cada opción a diferentes colores: **Orange** (naranja), **Brown** (marrón) y **White** (blanco).
+Ahora queremos usar esta función `dispatch` dentro del `handleSubmit` o cuando enviamos el formulario. Queremos despachar un evento personalizado desde este componente. Pero antes de hacer eso, vamos a juntar todos los datos en un solo objeto `person` que usaremos para agregar a la persona al array.
 
-Ahora lo que quiero hacer es vincular el valor del select box a la variable **beltColor**. Entonces, decimos **bind:value={beltColor}**. Lo que está pasando aquí es que, cuando el usuario selecciona una opción en el desplegable, el valor del select box se establece en el valor de esa opción. Por ejemplo, si el usuario selecciona **Orange**, el valor de **beltColor** se actualizará a **Orange**. Así de fácil. 
+Entonces, creamos el objeto `person` de la siguiente forma:
 
-Voy a guardar eso y probarlo. Si abro el modal y pongo un nombre como **Mario**, una edad como **30**, selecciono **Sneaking** y **Running**, y el color del cinturón como **Brown**, cuando hago clic en "Agregar persona", el resultado será **Mario, Brown, 30, Sneaking, Running**. Si cambio el color del cinturón a **Black**, el array de datos aún lo rastrea correctamente.
+```js
+const person = {
+  name,
+  beltColour,
+  age,
+  skills: [fighting, sneaking, running],
+  id: Math.random(), // Genera un ID aleatorio
+}
+```
 
-Así que eso es todo, hemos cubierto cómo usar los **checkboxes** y los **select boxes** en Svelte. En el próximo video, vamos a ver cómo actualizar los datos de las personas en nuestra aplicación. ¡Nos vemos!
+Ahora tenemos todos los datos que necesitamos. Para hacer el código un poco más limpio, podemos abreviar esto de la siguiente forma (esto implica el valor de la variable con el nombre de la propiedad):
+
+```js
+const person = {
+  name,
+  beltColour,
+  age,
+  skills: [fighting, sneaking, running],
+  id: Math.random(),
+}
+```
+
+Ahora, necesitamos despachar un evento personalizado llamado `addPerson` y pasar este objeto `person` como datos. Entonces, dentro del `handleSubmit`, hacemos lo siguiente:
+
+```js
+dispatch('addPerson', person)
+```
+
+Esto va a enviar el objeto `person` como parte del evento personalizado.
+
+Ahora podemos manejar este evento personalizado en el componente padre, porque el formulario es el que está despachando el evento. Para escuchar este evento en el componente padre, usamos la misma sintaxis que para cualquier otro evento, decimos `on` seguido del nombre del evento y, en nuestro caso, es `addPerson` porque es como lo llamamos antes. Así que, en el componente padre, lo escuchamos de esta forma:
+
+```js
+on: addPerson = { handleAddPerson }
+```
+
+Donde `handleAddPerson` es una función que vamos a crear en el componente padre para manejar este evento.
+
+Ahora creamos esa función, así que escribimos:
+
+```js
+const handleAddPerson = (e) => {
+  const person = e.detail // Los datos que enviamos están en 'detail'
+  console.log(person) // Mostramos el objeto de la persona en la consola
+}
+```
+
+Lo que sucede aquí es que los datos que enviamos en el evento personalizado están automáticamente adjuntos al objeto `event` dentro de la propiedad `detail`. Así que podemos acceder a esos datos y hacer lo que queramos con ellos.
+
+Ahora, si abrimos el modal y completamos el formulario con algunos datos, como nombre "Sean", edad "30", habilidades, y un color de cinturón, y luego hacemos click en "Agregar Persona", deberíamos ver ese objeto `person` registrado en la consola, todo funcionando correctamente.
+
+Finalmente, lo que quiero hacer es tomar esos datos y agregarlos a este array de personas en el componente padre. No puedo simplemente hacer `people.push(person)` porque esto no va a disparar una actualización en Svelte. Recuerda que Svelte solo reconoce que estamos actualizando los datos cuando reasignamos el valor a la variable, no cuando modificamos los datos directamente.
+
+Entonces, lo que voy a hacer es lo siguiente:
+
+```js
+people = [...people, person]
+```
+
+Usamos el operador de propagación (`...`) para copiar el contenido actual de `people` y luego agregar el nuevo `person` al principio del array. Esto va a disparar la actualización en Svelte, y el nuevo array con la persona añadida se va a reflejar en la vista.
+
+Entonces, cuando agregamos una nueva persona, el array `people` se actualiza y, gracias al ciclo de reactividad de Svelte, los cambios se reflejan automáticamente en la interfaz de usuario.
+
+---
+
+Así que, ahora tenemos una forma funcional de agregar nuevas personas al array, manejar eventos personalizados y actualizar la vista correctamente. Además, si quieres, puedes agregar otra `each` para mostrar las habilidades de cada persona, o lo que necesites.
