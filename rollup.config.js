@@ -70,7 +70,14 @@ export default {
 
 		// If we're building for production (npm run build
 		// instead of npm run dev), minify
-		production && terser()
+		production && terser(),
+
+		serve({
+			open: true, // Abre el navegador automáticamente
+			contentBase: ['public'], // Sirve la carpeta public
+			host: '0.0.0.0',  // Esto permite que se acceda desde otros dispositivos en la red
+			port: 8080, // Puerto de tu servidor
+		  })
 	],
 	watch: {
 		clearScreen: false
