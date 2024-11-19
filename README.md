@@ -1,10 +1,8 @@
 # Comenzando el proyecto Votación (Poll Project)
 
-Prefiero que no sea un "gang", así que creo que ya sabemos lo suficiente sobre lo básico de Svelte.
+Ahora vamos a juntar todo en un mini proyecto. Vamos a construir ese proyecto de "poles" que vimos al principio de esta serie. Para hacer esto, vamos a crear un proyecto de Svelte desde cero. Estoy en este directorio llamado "Tut", que es donde quiero crear el proyecto. 
 
-Ahora vamos a juntar todo en un mini proyecto. Vamos a construir ese proyecto de "poles" que vimos al principio de esta serie. Para hacer esto, vamos a crear un proyecto de Svelte desde cero. Estoy en este directorio llamado "Tut", que es donde quiero crear el proyecto.
-
-Así que, recordá que para crear un nuevo proyecto de Svelte, tenés que decir `npx degit`, y primero tenés que tener instalado el paquete `degit`. Después escribís `sveltejs/template` y yo le voy a poner de nombre a este proyecto "ninja-poles".
+Así que, recordá que para crear un nuevo proyecto de Svelte, tenés que decir `npx degit`, y primero tenés que tener instalado el paquete `degit`. Después escribís `sveltejs/template` y yo le voy a poner de nombre a este proyecto "ninja-poles". 
 
 Le das a Enter y eso va a crear el proyecto por nosotros. Cuando termine, entramos a ese directorio con `cd` y después le digo `code .` para que abra VS Code en este directorio.
 
