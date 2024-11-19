@@ -1,39 +1,43 @@
-# The 'New Poll' Component
+# Custom Button Component
 
-Bueno, ahora que tenemos las pestañas ordenadas y podemos cambiar entre los contenidos, lo que me gustaría hacer primero es un formulario para agregar nuevas encuestas, que va a ir justo acá. Para hacerlo, vamos a crear un nuevo componente para ese formulario y lo colocaré dentro de la carpeta de componentes. Así que vamos a crear un archivo nuevo y lo llamamos `createPollForm.svelte`.
+Bueno, mis amigos, ahora me gustaría crear un componente de botón personalizado para que este botón se vea un poco mejor que el botón predeterminado que tenemos acá. Así podremos reutilizar este componente de botón donde lo necesitemos en el futuro. Podemos hacerlo personalizable y tal vez pasarle algunas opciones como propiedades (props).
 
-Lo primero que voy a hacer es importarlo ahora en `App.svelte` y colocarlo acá, donde tenemos el contenido para agregar una nueva encuesta. Así que voy a duplicar uno de estos y cambiarlo, tanto acá como acá, por `createPollForm`, así. Ahora, abajo, vamos a mostrar este componente en lugar de la etiqueta de párrafo y vamos a escribir simplemente `createPollForm`, así. Lo guardamos. Ahora no vamos a ver nada por el momento, porque este componente aún no tiene contenido.
+Primero, vamos a crear este nuevo componente dentro de la carpeta *shared* y lo llamaremos `button.svelte`. 
 
-Así que vamos a crear primero la etiqueta `<script>`, luego abajo haremos la etiqueta `<style>` para más tarde, y lo primero que quiero hacer es estructurar el HTML de este formulario. Vamos a crear la etiqueta `<form>`, no necesita un `action`, y dentro de la forma vamos a agregar, en primer lugar, varios campos. Vamos a tener un campo para la pregunta de la encuesta, luego un campo para la respuesta A (o la respuesta 1), luego un campo para la respuesta B (o la respuesta 2) y finalmente un botón al final.
+Dentro de este archivo necesitamos un `<script>` porque vamos a aceptar algunas propiedades (props) más adelante. También necesitamos una etiqueta `<style>` al final porque vamos a agregar estilos más adelante. Y también necesitamos algún tipo de plantilla.
 
-Cada campo lo voy a colocar dentro de su propio `<div>`, para poder estilizarlo mejor después. Así que voy a escribir `<div class="form-field">` y dentro de este primer campo, voy a poner una etiqueta `<label>` que será para la "pregunta", y la etiqueta va a decir "Pregunta de la encuesta". Ahora necesitamos un campo de entrada debajo de eso. Vamos a escribir `<input type="text" id="question">`.
+La plantilla en sí será simple, solo va a ser un `<button>` y dentro de él vamos a renderizar un "slot". Recuerda que un *slot* es una manera de pasar datos a un componente. Entonces, cuando usemos el componente en el futuro, podemos pasar lo que queramos como contenido dentro de ese botón. Podría ser un ícono, texto o incluso HTML.
 
-Luego vamos a copiar este campo de formulario y hacer dos más, pero esta vez el primero va a ser para la respuesta A, así que le cambiamos el nombre a `answer-a` y cambiamos el texto de la etiqueta a "Respuesta A". Luego, abajo, vamos a hacer lo mismo para la respuesta B, cambiamos el nombre a `answer-b` y también cambiamos el ID a `answer-b`.
+Ya tenemos el *slot* configurado, y también quiero aceptar algunas propiedades. Ahora voy a explicar qué son, pero primero, digamos `export let type` y le asignamos un valor predeterminado de `primary`. Esto va a ser el tipo de botón, por lo que podría ser `primary` o `secondary`, tal vez. Y con eso podremos aplicar una clase al propio botón y hacer una selección para los estilos de *primary* y *secondary*, para que se vean de manera diferente.
 
-El motivo por el que estamos agregando los IDs es para vincular la etiqueta con el campo de entrada, porque el atributo `for` de la etiqueta debe coincidir con el ID del campo de entrada.
+La primera propiedad que vamos a aceptar es esta. También vamos a aceptar una propiedad llamada `flat`, que va a ser un valor booleano, es decir, *true* o *false*. Si es *true*, significará que el botón será plano, y si es *false*, el botón debería estar un poquito más elevado, tal vez con una sombra. Entonces podemos aplicar una clase condicional llamada `flat` al botón y darle un estilo diferente dependiendo de esto.
 
-Ahora tenemos este formulario y deberíamos poder ver que si vamos a "Agregar nueva encuesta", podemos ver este formulario. Lo estilizamos más tarde para que se vea mejor, pero primero quiero hacer un poco de enlace de datos para poder rastrear lo que un usuario escribe en cada uno de estos campos de entrada. 
+Finalmente, voy a decir `export let inverse` y le asignamos un valor predeterminado de *false*, también un valor booleano *true* o *false*. Si es *true*, lo que haremos es darle al botón un fondo blanco o transparente, y un borde, en vez de un fondo de color. Lo vamos a ver más adelante, pero por ahora, hagamos esto primero.
 
-Anteriormente, cuando hemos rastreado estos datos, hemos creado una variable separada para cada campo, pero ahora voy a mostrarte una forma diferente. Vamos a crear una sola variable llamada `fields`, que va a ser un objeto, y este objeto va a tener tres propiedades: una para la pregunta, otra para la respuesta A y otra para la respuesta B. Así que ahora estamos almacenando todos los campos dentro de un solo objeto, porque todos esos valores están relacionados entre sí.
+Entonces, el `class` de este botón va a ser igual al tipo. No es una clase condicional, no estamos diciendo `class type == algo`, estamos diciendo que la clase va a ser el tipo que definimos arriba. Así que si pasamos `primary`, la clase será `primary` (y es el valor por defecto). Si pasamos `secondary`, la clase será `secondary`. Después podremos estilarlas de manera diferente.
 
-Entonces, este objeto `fields` va a tener una propiedad `question` que inicialmente va a estar vacía, luego va a tener `answerA`, también vacío al principio, y por último `answerB`, vacío también al principio. Ahora tenemos el objeto `fields` y solo necesitamos vincular estos tres campos a las entradas del formulario.
+Vamos a agregar algunos estilos por ahora. Lo primero que vamos a hacer es decir que el botón tendrá un borde de `0`, un cursor de `pointer` (para que el usuario sepa que puede hacer clic), un radio de borde de `6px` para suavizar las esquinas, y un `padding` de `8px` arriba y abajo y `12px` a los lados. Además, vamos a poner un `font-weight` de *bold* y una sombra de caja (`box-shadow`), para darle un efecto 3D. Usaremos un color negro con un nivel de opacidad del 9.2% (`rgba(0, 0, 0, 0.092)`), algo sutil.
 
-Primero, vamos a enlazar el valor de este campo a algo. De hecho, voy a copiar y pegar eso en cada campo de entrada, para no tener que escribirlo todo de nuevo, porque soy un poco perezoso (o al menos yo lo soy). Este campo va a estar vinculado a `fields.question`, porque la propiedad `question` está dentro del objeto `fields`. Este de acá va a estar vinculado a `fields.answerA` y el último a `fields.answerB`.
+Ahora voy a importar este botón al formulario para ver cómo se ve hasta ahora. Voy a ir al formulario e importarlo al principio con `import Button from '../shared/button.svelte'`. Después, lo vamos a colocar en el lugar del botón actual, así:
 
-Ahora estamos vinculando los valores que el usuario escribe en los campos de entrada a las propiedades del objeto `fields`, así que ahora estamos almacenando esos valores dentro de este objeto. Ahora también necesitamos un botón al final, así que vamos a agregarlo: `<button>Agregar encuesta</button>`. Cuando el usuario haga clic en este botón, va a disparar un evento `submit` en el formulario. Para escuchar este evento, voy a poner `on:submit`, y también voy a agregar un modificador de evento, que es `preventDefault`, lo que vimos antes, y evita la acción predeterminada de refrescar la página cuando se dispara el evento `submit`.
+```svelte
+<Button>Add Poll</Button>
+```
 
-Entonces, lo que vamos a hacer ahora es crear un manejador de evento para el submit. Voy a decir `const submitHandler = () => {}` y dentro de este manejador lo que vamos a hacer es un `console.log` del objeto `fields`. Así que cuando hagamos clic en el botón, va a mostrar el objeto `fields` en la consola con los valores actuales de estas tres propiedades.
+Recuerda que estamos pasando contenido, que será lo que pongamos dentro de la etiqueta de apertura y cierre de `<Button>`, y eso aparecerá donde está el *slot* en el componente.
 
-Probemos esto ahora en la práctica. Vamos a "Agregar nueva encuesta", escribimos una pregunta, por ejemplo "¿Te gusta Marmite?" y dos respuestas. Al hacer clic en "Agregar encuesta", vemos que el objeto `fields` se muestra en la consola con la pregunta y las respuestas.
+Si guardamos eso y previsualizamos, deberíamos ver este nuevo botón. Aún no se ve increíble, y también tenemos un símbolo de cierre extra de `>` que vamos a corregir, pero ya estamos agregando los estilos a medida que avanzamos.
 
-Ahora estamos rastreando esos valores y almacenándolos dentro de este objeto. Más adelante, podremos agregar este objeto a un array de datos, que podemos recorrer y mostrar un template para cada encuesta. Pero por ahora, vamos a centrarnos solo en este formulario, y creo que me gustaría estilizarlo un poco mejor.
+Ahora vamos a estilizar las clases *primary* y *secondary*. Vamos a decir que el fondo del botón `primary` sea el rojo que usamos antes (`#d91b42`), con el texto blanco. La clase `secondary` va a tener un fondo verde (`#45C496`) y también texto blanco.
 
-Primero, voy a darle estilo a la etiqueta `<form>`. Esta va a tener un ancho de 400 píxeles, un margen de 0 arriba y abajo, y auto a los lados, para centrarla en la pantalla. También quiero que el texto esté alineado al centro.
+Si el tipo es `primary`, la clase será `primary` y se estilizará como este botón rojo con texto blanco. Si le pasamos `secondary`, la clase será `secondary` y se verá verde.
 
-Luego, voy a darle estilo a cada campo de formulario (`form-field`), para que tenga un margen de 18 píxeles arriba y abajo, y se centre en los lados. Después, voy a aplicar el 100% de ancho a los campos de entrada (que es el 100% de 400 píxeles, no de toda la pantalla). También quiero que tenga un borde redondeado de 6 píxeles, para suavizar las esquinas.
+Ahora, también vamos a agregar la funcionalidad de la propiedad `flat`. Si el valor de `flat` es *true*, agregamos una clase `flat` y eliminamos la sombra del botón (`box-shadow: none`). Si `flat` es *false*, no se aplica esa clase y el botón tendrá la sombra por defecto. 
 
-Por último, voy a darle estilo a las etiquetas (`label`), para que tengan un margen de 10 píxeles arriba y abajo y estén alineadas a la izquierda, para que no se superpongan con el texto centrado.
+Finalmente, en la propiedad `inverse`, vamos a aplicar una clase condicional. Si `inverse` es *true*, el fondo del botón será blanco y el color del texto será el color del fondo original (rojo o verde, dependiendo del tipo). También vamos a agregar un borde de 2px con el color correspondiente.
 
-Al guardar todo esto, si vamos a "Agregar nueva encuesta", ahora debería verse mucho mejor. Probemos nuevamente, agregamos una encuesta, y todo sigue funcionando perfectamente.
+Si no hemos activado `inverse`, el botón se verá como antes. Pero si cambiamos el valor de `inverse` a *true*, veremos los colores invertidos.
 
-Ahora hemos creado el formulario de la encuesta. Más adelante, vamos a tomar esta información y agregarla a un array de datos en el componente de la aplicación, para poder recorrer ese array y mostrar una plantilla para cada encuesta. Pero por ahora, lo que quiero hacer es crear un botón personalizado que sea reutilizable, para que se vean un poco mejor. Haremos eso en el siguiente video.
+Con todo esto, ahora tenemos un botón reutilizable y personalizable. Podemos usarlo para distintos tipos de botones, como botones rojos o verdes, planos o invertidos.
+
+Ahora que tenemos nuestro componente de botón personalizado, vamos a usarlo más adelante en otros componentes y también vamos a agregar validaciones personalizadas al formulario en el siguiente paso.
