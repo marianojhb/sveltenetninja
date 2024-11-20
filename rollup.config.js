@@ -1,4 +1,5 @@
-import { spawn } from 'child_process';
+import serve from 'rollup-plugin-serve';  // Importa el plugin
+
 import svelte from 'rollup-plugin-svelte';
 import commonjs from '@rollup/plugin-commonjs';
 import terser from '@rollup/plugin-terser';
@@ -8,78 +9,46 @@ import css from 'rollup-plugin-css-only';
 
 const production = !process.env.ROLLUP_WATCH;
 
-function serve() {
-	let server;
-
-	function toExit() {
-		if (server) server.kill(0);
-	}
-
-	return {
-		writeBundle() {
-			if (server) return;
-			server = spawn('npm', ['run', 'start', '--', '--dev'], {
-				stdio: ['ignore', 'inherit', 'inherit'],
-				shell: true
-			});
-
-			process.on('SIGTERM', toExit);
-			process.on('exit', toExit);
-		}
-	};
-}
-
 export default {
-	input: 'src/main.js',
-	output: {
-		sourcemap: true,
-		format: 'iife',
-		name: 'app',
-		file: 'public/build/bundle.js'
-	},
-	plugins: [
-		svelte({
-			compilerOptions: {
-				// enable run-time checks when not in production
-				dev: !production
-			}
-		}),
-		// we'll extract any component CSS out into
-		// a separate file - better for performance
-		css({ output: 'bundle.css' }),
+  input: 'src/main.js',
+  output: {
+    sourcemap: true,
+    format: 'iife',
+    name: 'app',
+    file: 'public/build/bundle.js'
+  },
+  plugins: [
+    svelte({
+      compilerOptions: {
+        dev: !production
+      }
+    }),
+    css({ output: 'bundle.css' }),
+    resolve({
+      browser: true,
+      dedupe: ['svelte'],
+      exportConditions: ['svelte']
+    }),
+    commonjs(),
 
-		// If you have external dependencies installed from
-		// npm, you'll most likely need these plugins. In
-		// some cases you'll need additional configuration -
-		// consult the documentation for details:
-		// https://github.com/rollup/plugins/tree/master/packages/commonjs
-		resolve({
-			browser: true,
-			dedupe: ['svelte'],
-			exportConditions: ['svelte']
-		}),
-		commonjs(),
+    // Configuración del plugin serve directamente
+    !production && serve({
+      open: true, // Abre el navegador automáticamente
+      contentBase: ['public'], // Sirve la carpeta public
+      host: '0.0.0.0',  // Esto permite que se acceda desde otros dispositivos
+      port: 5000, // Puerto de tu servidor (puedes configurarlo como desees)
+      headers: {
+        'Access-Control-Allow-Origin': '*' // Permite solicitudes desde cualquier origen
+      },
+    }),
 
-		// In dev mode, call `npm run start` once
-		// the bundle has been generated
-		!production && serve(),
+    // Solo activar livereload en desarrollo
+    !production && livereload('public'),
 
-		// Watch the `public` directory and refresh the
-		// browser on changes when not in production
-		!production && livereload('public'),
-
-		// If we're building for production (npm run build
-		// instead of npm run dev), minify
-		production && terser(),
-
-		serve({
-			open: true, // Abre el navegador automáticamente
-			contentBase: ['public'], // Sirve la carpeta public
-			host: '0.0.0.0',  // Esto permite que se acceda desde otros dispositivos en la red
-			port: 8080, // Puerto de tu servidor
-		  })
-	],
-	watch: {
-		clearScreen: false
-	}
+    // Minificar si es producción
+    production && terser()
+  ],
+  watch: {
+    clearScreen: false
+  }
 };
