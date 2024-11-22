@@ -36,7 +36,7 @@ export default {
       open: true, // Abre el navegador automáticamente
       contentBase: ['public'], // Sirve la carpeta public
       host: '0.0.0.0',  // Esto permite que se acceda desde otros dispositivos
-      port: 5000, // Puerto de tu servidor (puedes configurarlo como desees)
+      port: 3000, // Puerto de tu servidor (puedes configurarlo como desees)
       headers: {
         'Access-Control-Allow-Origin': '*' // Permite solicitudes desde cualquier origen
       },
