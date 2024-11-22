@@ -6,8 +6,58 @@ let fields = {
     answerA: '',
     answerB: ''
 }
+
+let errors = {
+    question : '',
+    answerA: '',
+    answerB: ''
+}
+
+let valid = false;
+
+
 const submitHandler = () => {
-    console.log(fields);
+    valid = true;
+
+    // validate question
+
+    if (fields.question.trim().length < 5 ) {
+        errors.question = 'Question must be at least 5 characters long.';
+        valid = false;
+        
+    }
+
+    else {
+        fields.errors = '';
+    }
+
+    // validate answer A
+
+    if (fields.answerA.trim().length < 1 ) {
+        errors.answerA = 'Answer A must be at least 1 characters long.';
+        valid = false;
+    }
+
+    else {
+        fields.errors = '';
+    }
+
+    // validate answer A
+
+    if (fields.answerB.trim().length < 1 ) {
+        errors.answerB = 'Answer B must be at least 1 characters long.';
+        valid = false;
+    }
+
+    else {
+        fields.errors = '';
+    }
+
+    // add new poll
+    if(valid) {
+        console.log('valid', fields);
+    }
+
 }
 </script>
 
@@ -16,20 +66,23 @@ const submitHandler = () => {
     <div class="form-field">
         <label for="question">Poll Question:</label>
         <input type="text" id="question" bind:value={fields.question}>
+        <div class="error">{errors.question}</div>
     </div>
 
     <div class="form-field">
         <label for="answer-a">Answer A</label>
         <input type="text" id="answer-a" bind:value={fields.answerA}>
+        <div class="error">{errors.answerA}</div>
     </div>
-
+    
     <div class="form-field">
         <label for="answer-b">Answer B</label>
         <input type="text" id="answer-b" bind:value={fields.answerB}>
+        <div class="error">{errors.answerB}</div>
     </div>
-
+    
     <Button type="secondary">Add Poll</Button>
-
+    
 </form>
 
 <style>
@@ -53,5 +106,13 @@ const submitHandler = () => {
         margin: 10px auto;
         text-align: left;
     }
+
+    .error {
+        font-weight: bold;
+        font-size: 12px;
+        color: #d91b42;
+
+    }
+
 
 </style>

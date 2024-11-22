@@ -1,43 +1,35 @@
-# Custom Button Component
+# Form Custom Validation
 
-Bueno, mis amigos, ahora me gustaría crear un componente de botón personalizado para que este botón se vea un poco mejor que el botón predeterminado que tenemos acá. Así podremos reutilizar este componente de botón donde lo necesitemos en el futuro. Podemos hacerlo personalizable y tal vez pasarle algunas opciones como propiedades (props).
+Bueno, entonces, lo que quiero hacer ahora es implementar un poco de validación en este formulario para que, por ejemplo, podamos agregar campos vacíos y que los acepte.
 
-Primero, vamos a crear este nuevo componente dentro de la carpeta *shared* y lo llamaremos `button.svelte`. 
+Swell no viene con validación para formularios lista para usar, así que tenemos que usar nuestra propia lógica, pero no importa porque es bastante simple de hacer, y eso es lo que vamos a hacer en este video. Así que, justo acá, donde disparamos el manejador de "submit" cuando el formulario se envía, vamos a validar la pregunta primero, luego la respuesta A y la respuesta B.
 
-Dentro de este archivo necesitamos un `<script>` porque vamos a aceptar algunas propiedades (props) más adelante. También necesitamos una etiqueta `<style>` al final porque vamos a agregar estilos más adelante. Y también necesitamos algún tipo de plantilla.
+Lo que también voy a hacer es crear una nueva variable llamada errors, que va a ser un objeto que al principio se va a ver muy parecido al objeto de fields. Y lo que vamos a hacer es almacenar un error para la pregunta en esta propiedad, un error para la respuesta A en esta propiedad, y un error para la respuesta B en esta otra propiedad.
 
-La plantilla en sí será simple, solo va a ser un `<button>` y dentro de él vamos a renderizar un "slot". Recuerda que un *slot* es una manera de pasar datos a un componente. Entonces, cuando usemos el componente en el futuro, podemos pasar lo que queramos como contenido dentro de ese botón. Podría ser un ícono, texto o incluso HTML.
+Entonces, estamos haciendo un seguimiento de los errores a medida que validamos cada campo. Si al final tenemos un error en uno de estos campos, declaramos que el formulario no es válido y luego mostramos ese error en el área correspondiente del formulario. Espero que se entienda.
 
-Ya tenemos el *slot* configurado, y también quiero aceptar algunas propiedades. Ahora voy a explicar qué son, pero primero, digamos `export let type` y le asignamos un valor predeterminado de `primary`. Esto va a ser el tipo de botón, por lo que podría ser `primary` o `secondary`, tal vez. Y con eso podremos aplicar una clase al propio botón y hacer una selección para los estilos de *primary* y *secondary*, para que se vean de manera diferente.
+También voy a crear otra variable llamada valid, que voy a poner como false al principio. Ahora, este valor de valid va a ser un booleano, y cuando el formulario no es válido, va a ser false; cuando el formulario sea válido, va a ser true. Al principio, cuando cargamos el formulario, vamos a suponer que no es válido, y luego, si todo está bien, lo vamos a poner como true, pero solo se pondrá como false otra vez si hay un error.
 
-La primera propiedad que vamos a aceptar es esta. También vamos a aceptar una propiedad llamada `flat`, que va a ser un valor booleano, es decir, *true* o *false*. Si es *true*, significará que el botón será plano, y si es *false*, el botón debería estar un poquito más elevado, tal vez con una sombra. Entonces podemos aplicar una clase condicional llamada `flat` al botón y darle un estilo diferente dependiendo de esto.
+Y entonces, ¿cómo validamos todo esto? Bueno, lo primero que vamos a hacer, en realidad, es poner valid igual a true. Así que, cuando enviemos el formulario, antes de hacer cualquier tipo de validación en los campos, va a decir: "Bueno, está bien, el formulario empieza siendo válido".
 
-Finalmente, voy a decir `export let inverse` y le asignamos un valor predeterminado de *false*, también un valor booleano *true* o *false*. Si es *true*, lo que haremos es darle al botón un fondo blanco o transparente, y un borde, en vez de un fondo de color. Lo vamos a ver más adelante, pero por ahora, hagamos esto primero.
+Si alguno de estos campos falla, si alguna de las validaciones falla, en ese momento vamos a poner valid en false.
 
-Entonces, el `class` de este botón va a ser igual al tipo. No es una clase condicional, no estamos diciendo `class type == algo`, estamos diciendo que la clase va a ser el tipo que definimos arriba. Así que si pasamos `primary`, la clase será `primary` (y es el valor por defecto). Si pasamos `secondary`, la clase será `secondary`. Después podremos estilarlas de manera diferente.
+Entonces, ¿cómo validamos la pregunta? Lo que vamos a hacer es una comprobación con if. Voy a decir: "Si fields.question.trim().length es menor que 5", entonces no va a ser válido. Quiero que la pregunta tenga al menos 5 caracteres, así que si esto es true (es decir, si es menor de 5), significa que no es válido. En ese caso, vamos a poner valid en false. También vamos a agregar un error en este campo de la pregunta en el objeto de errors. Lo vamos a hacer con algo como errors.question = 'La pregunta debe tener al menos 5 caracteres'.
 
-Vamos a agregar algunos estilos por ahora. Lo primero que vamos a hacer es decir que el botón tendrá un borde de `0`, un cursor de `pointer` (para que el usuario sepa que puede hacer clic), un radio de borde de `6px` para suavizar las esquinas, y un `padding` de `8px` arriba y abajo y `12px` a los lados. Además, vamos a poner un `font-weight` de *bold* y una sombra de caja (`box-shadow`), para darle un efecto 3D. Usaremos un color negro con un nivel de opacidad del 9.2% (`rgba(0, 0, 0, 0.092)`), algo sutil.
+Así que esa es la primera validación. Ahora, en el caso del else, si la validación pasa, lo que quiero hacer es resetear este error, es decir, poner el valor de errors.question como un string vacío, porque, por ejemplo, si al principio el formulario no es válido, y luego corregimos la pregunta, quiero que el error de la pregunta se borre. Así, si otro campo tiene un error, no le mostramos a la persona que la pregunta sigue fallando.
 
-Ahora voy a importar este botón al formulario para ver cómo se ve hasta ahora. Voy a ir al formulario e importarlo al principio con `import Button from '../shared/button.svelte'`. Después, lo vamos a colocar en el lugar del botón actual, así:
+Voy a copiar todo esto y pegarlo abajo para la validación de la respuesta A. La validación de la respuesta A va a ser que la longitud tiene que ser de al menos un carácter. Puede ser un carácter, porque la pregunta podría ser algo como "¿Cuál es tu letra favorita? A o B?" (sé que suena estúpido, pero podrían ser respuestas de un solo carácter). Entonces, si la respuesta A está vacía, vamos a hacer que el formulario no sea válido, poniendo valid = false, y agregamos el error correspondiente: "La respuesta A no puede estar vacía".
 
-```svelte
-<Button>Add Poll</Button>
-```
+Lo mismo para la respuesta B. Es muy similar a la validación de la respuesta A, solo que cambiamos todas las menciones de "answer A" por "answer B".
 
-Recuerda que estamos pasando contenido, que será lo que pongamos dentro de la etiqueta de apertura y cierre de `<Button>`, y eso aparecerá donde está el *slot* en el componente.
+Así que ahora, cuando enviamos el formulario, empezamos con valid como true. Si alguna de estas validaciones falla, ponemos valid = false y agregamos el error correspondiente a este objeto. Al final de todo, vamos a tener un objeto con todos los errores.
 
-Si guardamos eso y previsualizamos, deberíamos ver este nuevo botón. Aún no se ve increíble, y también tenemos un símbolo de cierre extra de `>` que vamos a corregir, pero ya estamos agregando los estilos a medida que avanzamos.
+Lo que voy a hacer abajo es un comentario que diga: "En este punto, queremos agregar una nueva encuesta", pero solo la vamos a agregar si valid es true. Entonces, si es válido, vamos a mostrar en la consola el objeto fields con los datos que el usuario ingresó. A futuro, vamos a agregar esta nueva encuesta a un array de datos, pero por ahora solo la mostramos en la consola.
 
-Ahora vamos a estilizar las clases *primary* y *secondary*. Vamos a decir que el fondo del botón `primary` sea el rojo que usamos antes (`#d91b42`), con el texto blanco. La clase `secondary` va a tener un fondo verde (`#45C496`) y también texto blanco.
+Si el formulario no es válido, no se va a hacer esto, y en su lugar, mostramos los errores en el formulario. Para eso, debajo de cada campo de entrada, voy a agregar un div con la clase error, que va a mostrar los errores correspondientes. Si el campo es válido, no se va a mostrar nada, pero si hay un error, vamos a ver el mensaje de error.
 
-Si el tipo es `primary`, la clase será `primary` y se estilizará como este botón rojo con texto blanco. Si le pasamos `secondary`, la clase será `secondary` y se verá verde.
+Entonces, si pruebo agregar una nueva encuesta y todos los campos son inválidos, voy a ver los errores correspondientes. Pero si rectifico, agrego una pregunta válida y las respuestas también son válidas, el formulario se valida correctamente, y vemos en la consola los datos de la encuesta ingresada.
 
-Ahora, también vamos a agregar la funcionalidad de la propiedad `flat`. Si el valor de `flat` es *true*, agregamos una clase `flat` y eliminamos la sombra del botón (`box-shadow: none`). Si `flat` es *false*, no se aplica esa clase y el botón tendrá la sombra por defecto. 
+Por último, voy a estilizar un poco esta clase de error para que se vea mejor, como ponerle color rojo y cambiar el tamaño de la fuente a algo más pequeño, como 12px. Ahora, si volvemos a probar, vemos los errores con el estilo adecuado.
 
-Finalmente, en la propiedad `inverse`, vamos a aplicar una clase condicional. Si `inverse` es *true*, el fondo del botón será blanco y el color del texto será el color del fondo original (rojo o verde, dependiendo del tipo). También vamos a agregar un borde de 2px con el color correspondiente.
-
-Si no hemos activado `inverse`, el botón se verá como antes. Pero si cambiamos el valor de `inverse` a *true*, veremos los colores invertidos.
-
-Con todo esto, ahora tenemos un botón reutilizable y personalizable. Podemos usarlo para distintos tipos de botones, como botones rojos o verdes, planos o invertidos.
-
-Ahora que tenemos nuestro componente de botón personalizado, vamos a usarlo más adelante en otros componentes y también vamos a agregar validaciones personalizadas al formulario en el siguiente paso.
+Y eso es todo. Ahora tenemos validación personalizada para el formulario. En el próximo video, vamos a ver cómo podemos tomar esta validación y realmente agregar la nueva encuesta a un array de datos.
