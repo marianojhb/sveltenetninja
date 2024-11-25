@@ -57,6 +57,7 @@
 </script>
 
 <Header />
+
 <main>
   <Tabs {activeItem} {items} on:tabChange={tabChange} />
   {#if activeItem === 'Current Poll'}
@@ -65,6 +66,7 @@
     <CreatePollForm on:add={handleAdd} />
   {/if}
 </main>
+
 <Footer />
 
 <style>
