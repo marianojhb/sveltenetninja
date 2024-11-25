@@ -1,125 +1,106 @@
 <script>
-import Button from '../shared/Button.svelte'
-import { createEventDispatcher } from 'svelte';
+  import Button from '../shared/Button.svelte'
+  import { createEventDispatcher } from 'svelte'
 
-let dispatch = createEventDispatcher();
+  let dispatch = createEventDispatcher()
 
-let fields = {
-    question : '',
+  let fields = {
+    question: '',
     answerA: '',
-    answerB: ''
-}
+    answerB: '',
+  }
 
-let errors = {
-    question : '',
+  let errors = {
+    question: '',
     answerA: '',
-    answerB: ''
-}
+    answerB: '',
+  }
 
-let valid = false;
+  let valid = false
 
-
-const submitHandler = () => {
-    valid = true;
+  const submitHandler = () => {
+    valid = true
 
     // validate question
 
-    if (fields.question.trim().length < 5 ) {
-        errors.question = 'Question must be at least 5 characters long.';
-        valid = false;
-        
-    }
-
-    else {
-        errors.question = '';
+    if (fields.question.trim().length < 5) {
+      errors.question = 'Question must be at least 5 characters long.'
+      valid = false
+    } else {
+      errors.question = ''
     }
 
     // validate answer A
 
-    if (fields.answerA.trim().length < 1 ) {
-        errors.answerA = 'Answer A must be at least 1 characters long.';
-        valid = false;
-    }
-
-    else {
-        errors.answerA = '';
+    if (fields.answerA.trim().length < 1) {
+      errors.answerA = 'Answer A must be at least 1 characters long.'
+      valid = false
+    } else {
+      errors.answerA = ''
     }
 
     // validate answer A
 
-    if (fields.answerB.trim().length < 1 ) {
-        errors.answerB = 'Answer B must be at least 1 characters long.';
-        valid = false;
+    if (fields.answerB.trim().length < 1) {
+      errors.answerB = 'Answer B must be at least 1 characters long.'
+      valid = false
+    } else {
+      errors.answerB = ''
     }
-
-    else {
-        errors.answerB = '';
-    }
-
-
 
     // add new poll
-    if(valid) {
-    let poll = { ...fields, votesA: 0, votsB: 0, id:Math.random() }
-    dispatch('add', poll)
-    
+    if (valid) {
+      let poll = { ...fields, votesA: 0, votesB: 0, id: Math.random() }
+      dispatch('add', poll)
     }
-
-}
+  }
 </script>
 
 <form on:submit|preventDefault={submitHandler}>
+  <div class="form-field">
+    <label for="question">Poll Question:</label>
+    <input type="text" id="question" bind:value={fields.question} />
+    <div class="error">{errors.question}</div>
+  </div>
 
-    <div class="form-field">
-        <label for="question">Poll Question:</label>
-        <input type="text" id="question" bind:value={fields.question}>
-        <div class="error">{errors.question}</div>
-    </div>
+  <div class="form-field">
+    <label for="answer-a">Answer A</label>
+    <input type="text" id="answer-a" bind:value={fields.answerA} />
+    <div class="error">{errors.answerA}</div>
+  </div>
 
-    <div class="form-field">
-        <label for="answer-a">Answer A</label>
-        <input type="text" id="answer-a" bind:value={fields.answerA}>
-        <div class="error">{errors.answerA}</div>
-    </div>
-    
-    <div class="form-field">
-        <label for="answer-b">Answer B</label>
-        <input type="text" id="answer-b" bind:value={fields.answerB}>
-        <div class="error">{errors.answerB}</div>
-    </div>
-    
-    <Button type="secondary">Add Poll</Button>
-    
+  <div class="form-field">
+    <label for="answer-b">Answer B</label>
+    <input type="text" id="answer-b" bind:value={fields.answerB} />
+    <div class="error">{errors.answerB}</div>
+  </div>
+
+  <Button type="secondary">Add Poll</Button>
 </form>
 
 <style>
+  form {
+    width: 400px;
+    margin: 0 auto;
+    text-align: center;
+  }
 
-    form {
-        width: 400px;
-        margin: 0 auto;
-        text-align: center;
-    }
+  .form-field {
+    margin: 18px auto;
+  }
 
-    .form-field {
-        margin: 18px auto;
-    }
+  input {
+    width: 100%;
+    border-radius: 6px;
+  }
+  label {
+    margin: 10px auto;
+    text-align: left;
+  }
 
-    input {
-        width: 100%;
-        border-radius: 6px;
-
-    }
-    label {
-        margin: 10px auto;
-        text-align: left;
-    }
-
-    .error {
-        font-weight: bold;
-        font-size: 12px;
-        color: #d91b42;
-
-    }
-
-
+  .error {
+    font-weight: bold;
+    font-size: 12px;
+    color: #d91b42;
+  }
 </style>
