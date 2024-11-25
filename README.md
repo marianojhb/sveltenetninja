@@ -20,13 +20,13 @@ Pero bueno, así es como funciona todo por debajo, y cuando construimos nuestro 
 
 Ahora que sabemos cómo funciona un poco más sobre el capó, vamos a intentar escribir algo de código. Ya hemos visto esto antes, donde estamos mostrando un nombre y una variable que está definida arriba. Al principio estaba definida como una propiedad que pasamos, pero ahora ya no la estamos aceptando como propiedad porque borramos la línea de exportación al principio. Si intentamos guardar eso ahora, sería undefined, y no vamos a ver ningún nombre. Dice "hello undefined".
 
-Entonces, en vez de eso, vamos a darle un valor. Voy a decir, let name = "yo", por ejemplo. Y para mostrar una variable que definimos en el script, dentro de la plantilla, usamos llaves simples (es decir, curly braces). Entonces ponemos {name}. Súper fácil. Si guardamos eso ahora, vamos a ver "hello yo".
+Entonces, en vez de eso, vamos a darle un valor. Voy a decir, `let name = "yoshi"`, por ejemplo. Y para mostrar una variable que definimos en el script, dentro de la plantilla, usamos llaves simples (es decir, curly braces). Entonces ponemos `{name}`. Súper fácil. Si guardamos eso ahora, vamos a ver "hello yoshi".
 
-Ahora puedo crear otra variable. Por ejemplo, let beltColor = "black", y para mostrarla, simplemente elimino el contenido que tenía dentro de la etiqueta <p> y, en vez de eso, pongo {beltColor}. Así que va a mostrar "black belt". Guardamos eso, y vemos que efectivamente muestra "black belt".
+Ahora puedo crear otra variable. Por ejemplo, `let beltColor = "black"`, y para mostrarla, simplemente elimino el contenido que tenía dentro de la etiqueta <p> y, en vez de eso, pongo `{beltColor}`. Así que va a mostrar "black belt". Guardamos eso, y vemos que efectivamente muestra "black belt".
 
 Bien, eso es cómo mostramos cualquier variable que definimos en nuestro script dentro de la plantilla. Es muy fácil. Ahora, ¿qué pasa si queremos cambiar esos datos en algún momento o reaccionar a un evento del usuario, como un clic en un botón para cambiar los datos? Bueno, podemos hacerlo. Vamos a crear un botón. En este caso, el botón va a decir "update belt color".
 
-Si queremos reaccionar a un clic en este botón, simplemente decimos on:click={algo}. Lo que va adentro de las llaves es el nombre de la función que vamos a declarar arriba. Supongamos que llamamos a esta función handleClick. Entonces, tenemos que definirla arriba. Por ejemplo, const handleClick = () => { beltColor = "orange" }.
+Si queremos reaccionar a un clic en este botón, simplemente decimos on:click={algo}. Lo que va adentro de las llaves es el nombre de la función que vamos a declarar arriba. Supongamos que llamamos a esta función handleClick. Entonces, tenemos que definirla arriba. Por ejemplo, `const handleClick = () => { beltColor = "orange" }`.
 
 Entonces, cuando el usuario haga clic en este botón, la función handleClick se va a ejecutar y va a cambiar el valor de beltColor a "orange". Cuando eso ocurra, la interfaz va a reaccionar a ese cambio y va a actualizar la vista en el navegador.
 
@@ -36,4 +36,4 @@ Entonces, todo esto que hemos visto hasta ahora es sintaxis de Svelte, no es HTM
 
 Lo que acabamos de hacer puede parecer sencillo, pero cuando creamos más componentes, estos paquetes van a ser más eficientes al generar los archivos finales.
 
-Ahora que aprendimos lo básico de Svelte, sabemos cómo definir datos en un componente, cómo mostrarlos, cómo manejar eventos como los clics en botones, etc. Por cierto, no necesitas atar estos eventos solo a botones, podrías hacerlo también en un <p> o un <h1>, si quisieras. Pero bueno, ahora que dominamos lo básico, en el siguiente video vamos a ver cómo usar imports y data binding.
+Ahora que aprendimos lo básico de Svelte, sabemos cómo definir datos en un componente, cómo mostrarlos, cómo manejar eventos como los clics en botones, etc. Por cierto, no necesitas atar estos eventos solo a botones, podrías hacerlo también en un `<p>` o un `<h1>`, si quisieras. Pero bueno, ahora que dominamos lo básico, en el siguiente video vamos a ver cómo usar imports y data binding.
