@@ -1,3 +1,5 @@
+# Svelte Basics
+
 Bueno, gente, antes de empezar a escribir cualquier código, vamos a echar un vistazo a cómo funciona todo bajo el capó de Svelte. Como dije en el video anterior, creamos todo nuestro código fuente dentro de esta carpeta source. Este es el lugar donde vas a estar escribiendo el 99% de tu código, y donde vamos a crear todos nuestros diferentes componentes de Svelte. De hecho, ya tenemos uno creado para nosotros, el App.svelte.
 
 Los componentes son como bloques de construcción de un sitio web, que se pueden juntar y luego inyectar al DOM o al navegador para crear todo el sitio web. Por ejemplo, podríamos tener un componente para un header, para un formulario de contacto, para un modal, para un footer, para un popup, etc. Y luego, al final, todos estos componentes pueden unirse y ser inyectados al DOM para formar todo el sitio web. Como dijimos, Svelte ya creó un componente de ruta para nosotros llamado App.svelte. Y por cierto, siempre que creamos un componente, debe tener esta extensión .svelte. Así Svelte sabe que esto es un componente y puede compilarlo como tal.
